@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<users>
+  <user>
+    <login>pesi</login>
+    <password>pesi007</password>
+  </user>
+  <user>
+    <login>admin</login>
+    <password>admin</password>
+  </user>
+</users>

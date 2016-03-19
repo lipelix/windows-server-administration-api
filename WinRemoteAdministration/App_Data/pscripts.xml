@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Pscripts>
+  <Pscript>
+    <Name>getUser</Name>
+    <Path>\PScripts\getUser.ps1</Path>
+  </Pscript>
+  <Pscript>
+    <Name>showDiskSpace</Name>
+    <Path>\PScripts\showDiskSpace.ps1</Path>
+  </Pscript>
+  <Pscript>
+    <Name>getProcess</Name>
+    <Path>\PScripts\getProcess.ps1</Path>
+  </Pscript>
+  <Pscript>
+    <Name>getCulture</Name>
+    <Path>\PScripts\getCulture.ps1</Path>
+  </Pscript>
+</Pscripts>
