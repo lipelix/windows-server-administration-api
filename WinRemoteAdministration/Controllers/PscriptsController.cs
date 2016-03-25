@@ -26,8 +26,8 @@ namespace WinRemoteAdministration.Controllers {
 
         [HttpGet]
         public string RunScript(string param) {
-            var ps = new PscriptsServices();        
-            return ps.RunScript(param, null);
+            var ps = new PscriptsServices();
+            return ps.RunScript(param, this.Request.GetQueryNameValuePairs());
         }
 
     }

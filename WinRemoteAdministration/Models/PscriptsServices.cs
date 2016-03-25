@@ -39,15 +39,20 @@ namespace WinRemoteAdministration.Models {
             return Pscripts.PScriptsList.Find(item => item.Name.Equals(name));
         }
 
-        public string RunScript(string name, IEnumerable<string> parameters) {
+        public string RunScript(string name, IEnumerable<KeyValuePair<string, string>> parameters) {
             var script = Pscripts.PScriptsList.Find(item => item.Name.Equals(name));
+
+            string scriptParams = "";
+            foreach (KeyValuePair<string, string> param in parameters) {
+                scriptParams += "-" + param.Key + " " + param.Value;
+            }
 
             if (script != null) {
                 // Initialize PowerShell engine
                 var shell = PowerShell.Create();
 
                 // Add the script to the PowerShell object
-                shell.Commands.AddScript("& \"" + script.Path + "\" | ConvertTo-Json -Compress");                       
+                shell.Commands.AddScript("& \"" + script.Path + "\" "+ scriptParams + " | ConvertTo-Json -Compress");
 
                 // Execute the script
                 var output = shell.Invoke();
@@ -58,12 +63,16 @@ namespace WinRemoteAdministration.Models {
                     if (filterExist(script)) {
                         var outputObject = Newtonsoft.Json.JsonConvert.DeserializeObject(output[0].BaseObject.ToString());
                         var filteredObject = CallFilter(script, outputObject);
+
                         return Newtonsoft.Json.JsonConvert.SerializeObject(filteredObject);
                     }
                     else {
                         return output[0].BaseObject.ToString();
-                    }                        
+                    }
                 }
+            }
+            else {
+                return CreateSimpleErrorResponse("Script not found");
             }
 
             return "";
@@ -91,6 +100,14 @@ namespace WinRemoteAdministration.Models {
             dynamic resObj = resultObject;
             var filteredObject = new { name = resObj.Name, displayName = resObj.DisplayName, englishName = resObj.EnglishName };
             return filteredObject;
+        }
+
+        public string CreateSimpleErrorResponse(string errorText) {
+            var errorObject = new {
+                error = errorText
+            };
+
+            return Newtonsoft.Json.JsonConvert.SerializeObject(errorObject);
         }
     }
 }
