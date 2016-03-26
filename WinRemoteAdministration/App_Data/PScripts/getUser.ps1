@@ -13,8 +13,4 @@ $Properties = @(
     'EmailAddress'
 )
 
-Try {
-    Get-ADUser $User -Properties $Properties
-} Catch {
-    return -1;
-}
+Get-ADUser $User -Properties $Properties

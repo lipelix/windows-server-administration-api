@@ -48,28 +48,34 @@ namespace WinRemoteAdministration.Models {
             }
 
             if (script != null) {
-                // Initialize PowerShell engine
-                var shell = PowerShell.Create();
-
-                // Add the script to the PowerShell object
-                shell.Commands.AddScript("& \"" + script.Path + "\" "+ scriptParams + " | ConvertTo-Json -Compress");
-
-                // Execute the script
-                var output = shell.Invoke();
-
-                if (output.Count > 0) {
-                    var builder = new StringBuilder();
-
-                    if (filterExist(script)) {
-                        var outputObject = Newtonsoft.Json.JsonConvert.DeserializeObject(output[0].BaseObject.ToString());
-                        var filteredObject = CallFilter(script, outputObject);
-
-                        return Newtonsoft.Json.JsonConvert.SerializeObject(filteredObject);
+                try {
+                    var shell = PowerShell.Create();
+                    shell.Commands.AddScript("& \"" + script.Path + "\" " + scriptParams + " | ConvertTo-Json");
+                    Collection<PSObject> results = shell.Invoke();
+                    System.Diagnostics.Debug.WriteLine("Output:");
+                    foreach (var psObject in results) {
+                        System.Diagnostics.Debug.WriteLine(psObject);
+                        var outputObject = Newtonsoft.Json.JsonConvert.DeserializeObject(psObject.ToString());
+                        if (filterExist(script)) {
+                            var filteredObject = CallFilter(script, outputObject);
+                            return Newtonsoft.Json.JsonConvert.SerializeObject(filteredObject);
+                        }
+                        else {
+                            return Newtonsoft.Json.JsonConvert.SerializeObject(outputObject);
+                        }
                     }
-                    else {
-                        return output[0].BaseObject.ToString();
+                    System.Diagnostics.Debug.WriteLine("Non-terminating errors:");
+                    foreach (ErrorRecord err in shell.Streams.Error) {
+                        System.Diagnostics.Debug.WriteLine(err.ToString());
+                        return CreateSimpleErrorResponse(err.ToString());
                     }
                 }
+                catch (RuntimeException ex) {
+                    System.Diagnostics.Debug.WriteLine("Terminating error:");
+                    System.Diagnostics.Debug.WriteLine(ex.Message);
+                    return CreateSimpleErrorResponse(ex.Message);
+                }
+
             }
             else {
                 return CreateSimpleErrorResponse("Script not found");
@@ -99,6 +105,24 @@ namespace WinRemoteAdministration.Models {
         public object getCultureFilter(object resultObject) {
             dynamic resObj = resultObject;
             var filteredObject = new { name = resObj.Name, displayName = resObj.DisplayName, englishName = resObj.EnglishName };
+            return filteredObject;
+        }
+
+        public object getUserFilter(object resultObject) {
+            dynamic resObj = resultObject;        
+            var filteredObject = new {
+                GivenName = resObj.GivenName,
+                Surname = resObj.Surname,
+                Enabled = resObj.Enabled,
+                SamAccountName = resObj.SamAccountName,
+                DistinguishedName = resObj.DistinguishedName,
+                Name = resObj.Name,
+                AccountExpirationDate = resObj.AccountExpirationDate.ToString("G"),
+                EmailAddress = resObj.EmailAddress,
+                LastLogonDate = resObj.LastLogonDate.ToString("G"),
+                PasswordLastSet = resObj.PasswordLastSet.ToString("G"),
+                Created = resObj.Created.ToString("G")
+            };
             return filteredObject;
         }
 
