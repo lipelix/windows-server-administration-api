@@ -22,6 +22,9 @@ namespace WinRemoteAdministration {
                 routeTemplate: "api/{controller}/{action}/{param}",
                 defaults: new { param = RouteParameter.Optional }
             );
+
+            // Enforce HTTPS
+            config.Filters.Add(new WinRemoteAdministration.Filters.RequireHttpsAttribute());
         }
     }
 }

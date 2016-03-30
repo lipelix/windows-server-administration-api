@@ -12,7 +12,7 @@ using System.Reflection;
 using System.Text;
 using System.Web.Helpers;
 
-namespace WinRemoteAdministration.Models {
+namespace WinRemoteAdministration.Services {
     public class PscriptsServices : IPscriptsServices {
 
         protected Pscripts Pscripts;

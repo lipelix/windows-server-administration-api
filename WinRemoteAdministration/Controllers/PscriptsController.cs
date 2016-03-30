@@ -6,10 +6,13 @@ using System.Management.Automation;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
-using WinRemoteAdministration.Models;
+using WinRemoteAdministration.Filters;
+using WinRemoteAdministration.Services;
 
 namespace WinRemoteAdministration.Controllers {
 
+    //    [RequireHttps]
+    [Authorize]
     public class PscriptsController : ApiController {
 
         [HttpGet]
