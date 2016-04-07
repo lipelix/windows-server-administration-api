@@ -3,9 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using System.Web.Http;
+using System.Web.Http.Results;
 using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.EntityFramework;
 using WinRemoteAdministration.Models;
 
 namespace WinRemoteAdministration.Controllers {
@@ -18,10 +21,17 @@ namespace WinRemoteAdministration.Controllers {
             _repo = new AuthRepository();
         }
 
+        [Authorize]
+        [HttpGet]
+        public HttpResponseMessage Ping() {
+            HttpResponseMessage response = Request.CreateResponse(HttpStatusCode.OK);
+            return response;
+        }
+
         // POST api/Account/Register
         [AllowAnonymous]
         [Route("Register")]
-        public async Task<IHttpActionResult> Register(UserModel userModel) {
+        public async Task<IHttpActionResult> Register(UserRegModel userModel) {
             if (!ModelState.IsValid) {
                 return BadRequest(ModelState);
             }
@@ -32,6 +42,22 @@ namespace WinRemoteAdministration.Controllers {
 
             if (errorResult != null) {
                 return errorResult;
+            }
+
+            return Ok();
+        }
+
+        // POST api/account/isValid
+        [Route("isValid")]
+        public async Task<IHttpActionResult> IsValid(UserModel userModel) {
+            if (!ModelState.IsValid) {
+                return BadRequest(ModelState);
+            }
+
+            IdentityUser result = await _repo.FindUser(userModel.UserName, userModel.Password);
+        
+            if (result == null) {
+                return new UnauthorizedResult(new AuthenticationHeaderValue[0], this.Request);
             }
 
             return Ok();

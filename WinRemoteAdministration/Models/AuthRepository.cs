@@ -17,7 +17,7 @@ namespace WinRemoteAdministration.Models {
             _userManager = new UserManager<IdentityUser>(new UserStore<IdentityUser>(_ctx));
         }
 
-        public async Task<IdentityResult> RegisterUser(UserModel userModel) {
+        public async Task<IdentityResult> RegisterUser(UserRegModel userModel) {
             IdentityUser user = new IdentityUser {
                 UserName = userModel.UserName
             };
