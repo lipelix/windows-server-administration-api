@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Text;
 using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Results;
@@ -21,10 +22,9 @@ namespace WinRemoteAdministration.Controllers {
             _repo = new AuthRepository();
         }
 
-        [Authorize]
         [HttpGet]
         public HttpResponseMessage Ping() {
-            HttpResponseMessage response = Request.CreateResponse(HttpStatusCode.OK);
+            HttpResponseMessage response = Request.CreateResponse(HttpStatusCode.OK, "pong");
             return response;
         }
 
@@ -49,6 +49,7 @@ namespace WinRemoteAdministration.Controllers {
 
         // POST api/account/isValid
         [Route("isValid")]
+        [AllowAnonymous]
         public async Task<IHttpActionResult> IsValid(UserModel userModel) {
             if (!ModelState.IsValid) {
                 return BadRequest(ModelState);

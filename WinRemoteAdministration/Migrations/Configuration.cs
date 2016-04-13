@@ -1,22 +1,25 @@
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 
-namespace WinRemoteAdministration.Migrations
-{
+namespace WinRemoteAdministration.Migrations {
     using System;
     using System.Data.Entity;
     using System.Data.Entity.Migrations;
     using System.Linq;
 
-    internal sealed class Configuration : DbMigrationsConfiguration<WinRemoteAdministration.Models.OwinAuthDbContext>
-    {
-        public Configuration()
-        {
+    internal sealed class Configuration : DbMigrationsConfiguration<WinRemoteAdministration.Models.OwinAuthDbContext> {
+        public Configuration() {
             AutomaticMigrationsEnabled = false;
         }
 
-        protected override void Seed(WinRemoteAdministration.Models.OwinAuthDbContext context)
-        {
+        protected override void Seed(WinRemoteAdministration.Models.OwinAuthDbContext context) {
+
+            IdentityUser superAdmin = new IdentityUser();
+            superAdmin.UserName = "superadmin";
+            superAdmin.PasswordHash = "123456";
+
+            context.Users.Add(superAdmin);
+
             //              This method will be called after migrating to the latest version.
             //
             //              You can use the DbSet<T>.AddOrUpdate() helper extension method 
