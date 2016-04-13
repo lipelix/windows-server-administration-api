@@ -39,12 +39,12 @@ namespace WinRemoteAdministration.Services {
             return Pscripts.PScriptsList.Find(item => item.Name.Equals(name));
         }
 
-        public string RunScript(string name, IEnumerable<KeyValuePair<string, string>> parameters) {
+        public string RunScript(string name, IEnumerator<KeyValuePair<string, string>> parameters) {
             var script = Pscripts.PScriptsList.Find(item => item.Name.Equals(name));
 
             string scriptParams = "";
-            foreach (KeyValuePair<string, string> param in parameters) {
-                scriptParams += "-" + param.Key + " " + param.Value;
+            while (parameters.MoveNext()) {
+                scriptParams += "-" + parameters.Current.Key + " \"" + parameters.Current.Value + "\" ";
             }
 
             if (script != null) {
@@ -121,6 +121,18 @@ namespace WinRemoteAdministration.Services {
                 EmailAddress = resObj.EmailAddress,
                 LastLogonDate = resObj.LastLogonDate.ToString("G"),
                 PasswordLastSet = resObj.PasswordLastSet.ToString("G"),
+                Created = resObj.Created.ToString("G")
+            };
+            return filteredObject;
+        }
+
+        public object createUserFilter(object resultObject) {
+            dynamic resObj = resultObject;
+            var filteredObject = new {
+                Enabled = resObj.Enabled,
+                SamAccountName = resObj.SamAccountName,
+                Name = resObj.Name,
+                AccountExpirationDate = resObj.AccountExpirationDate.ToString("G"),
                 Created = resObj.Created.ToString("G")
             };
             return filteredObject;

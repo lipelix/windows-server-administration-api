@@ -16,4 +16,8 @@
     <Name>getCulture</Name>
     <Path>\PScripts\getCulture.ps1</Path>
   </Pscript>
+  <Pscript>
+    <Name>createUser</Name>
+    <Path>\PScripts\createUser.ps1</Path>
+  </Pscript>
 </Pscripts>

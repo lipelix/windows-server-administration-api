@@ -234,6 +234,7 @@
     <Compile Include="Services\IPscriptsServices.cs" />
     <Compile Include="Services\PscriptsServices.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\WebAPIUtils.cs" />
     <Compile Include="Startup.cs" />
   </ItemGroup>
   <ItemGroup>
