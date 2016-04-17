@@ -67,18 +67,18 @@ namespace WinRemoteAdministration.Services {
                     System.Diagnostics.Debug.WriteLine("Non-terminating errors:");
                     foreach (ErrorRecord err in shell.Streams.Error) {
                         System.Diagnostics.Debug.WriteLine(err.ToString());
-                        return CreateSimpleErrorResponse(err.ToString());
+                        return WebAPIUtils.CreateSimpleErrorResponse(err.ToString());
                     }
                 }
                 catch (RuntimeException ex) {
                     System.Diagnostics.Debug.WriteLine("Terminating error:");
                     System.Diagnostics.Debug.WriteLine(ex.Message);
-                    return CreateSimpleErrorResponse(ex.Message);
+                    return WebAPIUtils.CreateSimpleErrorResponse(ex.Message);
                 }
 
             }
             else {
-                return CreateSimpleErrorResponse("Script not found");
+                return WebAPIUtils.CreateSimpleErrorResponse("Script not found");
             }
 
             return "";
@@ -138,12 +138,5 @@ namespace WinRemoteAdministration.Services {
             return filteredObject;
         }
 
-        public string CreateSimpleErrorResponse(string errorText) {
-            var errorObject = new {
-                error = errorText
-            };
-
-            return Newtonsoft.Json.JsonConvert.SerializeObject(errorObject);
-        }
     }
 }

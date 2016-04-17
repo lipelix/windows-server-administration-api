@@ -24,7 +24,7 @@ namespace WinRemoteAdministration {
             );
 
             // Enforce HTTPS
-            config.Filters.Add(new WinRemoteAdministration.Filters.RequireHttpsAttribute());
+//            config.Filters.Add(new WinRemoteAdministration.Filters.RequireHttpsAttribute());
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -10,34 +11,57 @@ using System.Web.Http;
 using System.Web.Http.Results;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
+using WinRemoteAdministration.Filters;
 using WinRemoteAdministration.Models;
+using WinRemoteAdministration.Services;
 
 namespace WinRemoteAdministration.Controllers {
 
     [RoutePrefix("api/Account")]
     public class AccountController : ApiController {
-        private AuthRepository _repo = null;
+        private AuthRepository repo = null;
 
         public AccountController() {
-            _repo = new AuthRepository();
+            repo = new AuthRepository();
+        }
+
+        [HttpGet]        
+        public HttpResponseMessage getCert() {
+            var path = System.Web.HttpContext.Current.Server.MapPath("~/App_Data/cert.pfx");
+            HttpResponseMessage result = new HttpResponseMessage(HttpStatusCode.OK);
+
+            try {                
+                var stream = new FileStream(path, FileMode.Open);
+                result.Content = new StreamContent(stream);
+                result.Content.Headers.ContentDisposition = new ContentDispositionHeaderValue("attachment");
+                result.Content.Headers.ContentDisposition.FileName = Path.GetFileName(path);
+                result.Content.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream");
+                result.Content.Headers.ContentLength = stream.Length;
+            }
+            catch (Exception) {
+                result.Content = new StringContent (WebAPIUtils.CreateSimpleErrorResponse("Server does not provide certificate."));
+                return result;
+            }
+
+            return result;
         }
 
         [HttpGet]
         public HttpResponseMessage Ping() {
             HttpResponseMessage response = Request.CreateResponse(HttpStatusCode.OK, "pong");
+            response.Content = new StringContent("hello", Encoding.Unicode);
             return response;
         }
 
         // POST api/Account/Register
-        [AllowAnonymous]
-        [Route("Register")]
+        [RequireHttps]
+        [Authorize]
         public async Task<IHttpActionResult> Register(UserRegModel userModel) {
             if (!ModelState.IsValid) {
                 return BadRequest(ModelState);
             }
 
-            IdentityResult result = await _repo.RegisterUser(userModel);
-
+            IdentityResult result = await repo.RegisterUser(userModel);
             IHttpActionResult errorResult = GetErrorResult(result);
 
             if (errorResult != null) {
@@ -48,14 +72,14 @@ namespace WinRemoteAdministration.Controllers {
         }
 
         // POST api/account/isValid
-        [Route("isValid")]
-        [AllowAnonymous]
+        [RequireHttps]
+        [Authorize]
         public async Task<IHttpActionResult> IsValid(UserModel userModel) {
             if (!ModelState.IsValid) {
                 return BadRequest(ModelState);
             }
 
-            IdentityUser result = await _repo.FindUser(userModel.UserName, userModel.Password);
+            IdentityUser result = await repo.FindUser(userModel.UserName, userModel.Password);
         
             if (result == null) {
                 return new UnauthorizedResult(new AuthenticationHeaderValue[0], this.Request);
@@ -66,7 +90,7 @@ namespace WinRemoteAdministration.Controllers {
 
         protected override void Dispose(bool disposing) {
             if (disposing) {
-                _repo.Dispose();
+                repo.Dispose();
             }
 
             base.Dispose(disposing);

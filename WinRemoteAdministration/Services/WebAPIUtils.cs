@@ -20,16 +20,15 @@ namespace WinRemoteAdministration.Services {
             if (formDataCollection != null)
                 pairs = formDataCollection.GetEnumerator();
 
-//            NameValueCollection collection = new NameValueCollection();
-//
-//            while (pairs.MoveNext()) {
-//                KeyValuePair<string, string> pair = pairs.Current;
-//
-//                collection.Add(pair.Key, pair.Value);
-//            }
-//
-//            return collection;
             return pairs;
+        }
+
+        public static string CreateSimpleErrorResponse(string errorText) {
+            var errorObject = new {
+                error = errorText
+            };
+
+            return Newtonsoft.Json.JsonConvert.SerializeObject(errorObject);
         }
 
     }
