@@ -1,0 +1,1 @@
+﻿Search-ADAccount -AccountInactive -ComputersOnly -TimeSpan "30" | Sort-Object SamAccountName | Select-Object -property SamAccountName, Name

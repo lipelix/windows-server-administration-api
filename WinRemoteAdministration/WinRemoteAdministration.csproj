@@ -334,7 +334,7 @@
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>53978</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>https://192.168.0.100:44302/</IISUrl>
+          <IISUrl>http://192.168.0.100:53978/</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>

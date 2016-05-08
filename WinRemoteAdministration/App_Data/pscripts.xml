@@ -1,23 +1,74 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Pscripts>
   <Pscript>
+    <Name>createUser</Name>
+    <Path>\PScripts\createUser.ps1</Path>
+  </Pscript>
+  <Pscript>
     <Name>getUser</Name>
     <Path>\PScripts\getUser.ps1</Path>
   </Pscript>
   <Pscript>
-    <Name>showDiskSpace</Name>
-    <Path>\PScripts\showDiskSpace.ps1</Path>
+    <Name>getUserMembership</Name>
+    <Path>\PScripts\getUserMembership.ps1</Path>
+  </Pscript>
+  <Pscript>
+    <Name>getUsers</Name>
+    <Path>\PScripts\getUsers.ps1</Path>
+  </Pscript>
+  <Pscript>
+    <Name>getComputersOnline</Name>
+    <Path>\PScripts\getComputersOnline.ps1</Path>
   </Pscript>
   <Pscript>
     <Name>getProcess</Name>
     <Path>\PScripts\getProcess.ps1</Path>
   </Pscript>
   <Pscript>
-    <Name>getCulture</Name>
-    <Path>\PScripts\getCulture.ps1</Path>
+    <Name>stopProcess</Name>
+    <Path>\PScripts\stopProcess.ps1</Path>
   </Pscript>
   <Pscript>
-    <Name>createUser</Name>
-    <Path>\PScripts\createUser.ps1</Path>
+    <Name>getProcesses</Name>
+    <Path>\PScripts\getProcesses.ps1</Path>
   </Pscript>
+  <Pscript>
+    <Name>getService</Name>
+    <Path>\PScripts\getService.ps1</Path>
+  </Pscript>
+  <Pscript>
+    <Name>startService</Name>
+    <Path>\PScripts\startService.ps1</Path>
+  </Pscript>
+  <Pscript>
+    <Name>stopService</Name>
+    <Path>\PScripts\stopService.ps1</Path>
+  </Pscript>
+  <Pscript>
+    <Name>restartService</Name>
+    <Path>\PScripts\restartService.ps1</Path>
+  </Pscript>
+  <Pscript>
+    <Name>getServices</Name>
+    <Path>\PScripts\getServices.ps1</Path>
+  </Pscript>
+  <Pscript>
+    <Name>inactiveComputers</Name>
+    <Path>\PScripts\inactiveComputers.ps1</Path>
+  </Pscript>
+  <Pscript>
+    <Name>inactiveUsers</Name>
+    <Path>\PScripts\inactiveUsers.ps1</Path>
+  </Pscript>
+  <Pscript>
+    <Name>getInactive</Name>
+    <Path>\PScripts\getInactive.ps1</Path>
+  </Pscript>
+  <Pscript>
+    <Name>showDiskSpace</Name>
+    <Path>\PScripts\showDiskSpace.ps1</Path>
+  </Pscript>
+
+
+
 </Pscripts>

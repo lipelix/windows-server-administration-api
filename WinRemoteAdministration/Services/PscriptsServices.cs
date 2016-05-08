@@ -102,41 +102,35 @@ namespace WinRemoteAdministration.Services {
             return method.Invoke(this, new object[] {json});   
         }
 
-        public object getCultureFilter(object resultObject) {
-            dynamic resObj = resultObject;
-            var filteredObject = new { name = resObj.Name, displayName = resObj.DisplayName, englishName = resObj.EnglishName };
-            return filteredObject;
-        }
-
-        public object getUserFilter(object resultObject) {
-            dynamic resObj = resultObject;        
-            var filteredObject = new {
-                GivenName = resObj.GivenName,
-                Surname = resObj.Surname,
-                Enabled = resObj.Enabled,
-                SamAccountName = resObj.SamAccountName,
-                DistinguishedName = resObj.DistinguishedName,
-                Name = resObj.Name,
-                AccountExpirationDate = resObj.AccountExpirationDate.ToString("G"),
-                EmailAddress = resObj.EmailAddress,
-                LastLogonDate = resObj.LastLogonDate.ToString("G"),
-                PasswordLastSet = resObj.PasswordLastSet.ToString("G"),
-                Created = resObj.Created.ToString("G")
-            };
-            return filteredObject;
-        }
-
-        public object createUserFilter(object resultObject) {
-            dynamic resObj = resultObject;
-            var filteredObject = new {
-                Enabled = resObj.Enabled,
-                SamAccountName = resObj.SamAccountName,
-                Name = resObj.Name,
-                AccountExpirationDate = resObj.AccountExpirationDate.ToString("G"),
-                Created = resObj.Created.ToString("G")
-            };
-            return filteredObject;
-        }
+//        public object getUserFilter(object resultObject) {
+//            dynamic resObj = resultObject;        
+//            var filteredObject = new {
+//                GivenName = resObj.GivenName,
+//                Surname = resObj.Surname,
+//                Enabled = resObj.Enabled,
+//                SamAccountName = resObj.SamAccountName,
+//                DistinguishedName = resObj.DistinguishedName,
+//                Name = resObj.Name,
+//                AccountExpirationDate = resObj.AccountExpirationDate.ToString("G"),
+//                EmailAddress = resObj.EmailAddress,
+//                LastLogonDate = resObj.LastLogonDate.ToString("G"),
+//                PasswordLastSet = resObj.PasswordLastSet.ToString("G"),
+//                Created = resObj.Created.ToString("G")
+//            };
+//            return filteredObject;
+//        }
+//
+//        public object createUserFilter(object resultObject) {
+//            dynamic resObj = resultObject;
+//            var filteredObject = new {
+//                Enabled = resObj.Enabled,
+//                SamAccountName = resObj.SamAccountName,
+//                Name = resObj.Name,
+//                AccountExpirationDate = resObj.AccountExpirationDate.ToString("G"),
+//                Created = resObj.Created.ToString("G")
+//            };
+//            return filteredObject;
+//        }
 
     }
 }
