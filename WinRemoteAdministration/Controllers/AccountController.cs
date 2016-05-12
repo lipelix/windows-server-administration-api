@@ -9,15 +9,15 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Results;
+using System.Web.Mvc;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
-using WinRemoteAdministration.Filters;
 using WinRemoteAdministration.Models;
 using WinRemoteAdministration.Services;
 
 namespace WinRemoteAdministration.Controllers {
 
-    [RoutePrefix("api/Account")]
+    [System.Web.Http.RoutePrefix("api/Account")]
     public class AccountController : ApiController {
         private AuthRepository repo = null;
 
@@ -25,7 +25,7 @@ namespace WinRemoteAdministration.Controllers {
             repo = new AuthRepository();
         }
 
-        [HttpGet]        
+        [System.Web.Http.HttpGet]        
         public HttpResponseMessage getCert() {
             var path = System.Web.HttpContext.Current.Server.MapPath("~/App_Data/cert.pfx");
             HttpResponseMessage result = new HttpResponseMessage(HttpStatusCode.OK);
@@ -46,34 +46,16 @@ namespace WinRemoteAdministration.Controllers {
             return result;
         }
 
-        [HttpGet]
+        [System.Web.Http.HttpGet]
         public HttpResponseMessage Ping() {
             HttpResponseMessage response = Request.CreateResponse(HttpStatusCode.OK, "pong");
             response.Content = new StringContent("hello", Encoding.Unicode);
             return response;
         }
 
-        // POST api/Account/Register
-        [RequireHttps]
-        [Authorize]
-        public async Task<IHttpActionResult> Register(UserRegModel userModel) {
-            if (!ModelState.IsValid) {
-                return BadRequest(ModelState);
-            }
-
-            IdentityResult result = await repo.RegisterUser(userModel);
-            IHttpActionResult errorResult = GetErrorResult(result);
-
-            if (errorResult != null) {
-                return errorResult;
-            }
-
-            return Ok();
-        }
-
         // POST api/account/isValid
-        [RequireHttps]
-        [Authorize]
+        [Filters.RequireHttps]
+        [System.Web.Http.Authorize]
         public async Task<IHttpActionResult> IsValid(UserModel userModel) {
             if (!ModelState.IsValid) {
                 return BadRequest(ModelState);

@@ -13,12 +13,24 @@ namespace WinRemoteAdministration.Migrations {
         }
 
         protected override void Seed(WinRemoteAdministration.Models.OwinAuthDbContext context) {
+            var roleStore = new RoleStore<IdentityRole>(context);
+            var roleManager = new RoleManager<IdentityRole>(roleStore);
 
-            IdentityUser superAdmin = new IdentityUser();
-            superAdmin.UserName = "superadmin";
-            superAdmin.PasswordHash = "123456";
+            roleManager.Create(new IdentityRole { Name = "admin" });
+            roleManager.Create(new IdentityRole { Name = "supervisor" });
 
-            context.Users.Add(superAdmin);
+            var userStore = new UserStore<IdentityUser>(context);
+            var userManager = new UserManager<IdentityUser>(userStore);
+
+            var user = new IdentityUser { UserName = "supervisor", PasswordHash = "123456"};
+            userManager.Create(user);
+            userManager.AddToRole(user.Id, "supervisor");
+
+//            IdentityUser superAdmin = new IdentityUser();
+//            superAdmin.UserName = "superadmin";
+//            superAdmin.PasswordHash = "123456";
+//
+//            context.Users.Add(superAdmin);
 
             //              This method will be called after migrating to the latest version.
             //
