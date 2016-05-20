@@ -6,6 +6,7 @@
         <th>Username</th>
         <th>Email</th>
         <th>Roles</th>
+        <th></th>
     </tr>
     </thead>
 </table>
@@ -15,18 +16,27 @@
         var table = $('#users').DataTable({
             "ajax": "/users/getUsers",
             "columns": [
-                { "data": "UserName" },
+                {
+                    "data": function (data, type, row, meta) {
+                        return '<a href="' + data.UserInfoHref + '">'+ data.UserName +'</a>';
+                    }
+                },
                 { "data": "Email" },
-                { "data": "Roles" }
+                { "data": "Roles" },
+                {
+                    "data": function (data, type, row, meta) {
+                               return '<a href="' + data.EditRolesHref + '">Edit Roles</a>';
+                    }
+                }
             ]
         });
 
-        $('#users').on('click', 'tr', function () {
-            var id = table.row( this ).id();
-            $.get("/users/getUser", { id: id})
-              .done(function (data) {
-                    console.log(data);
-            });
-        });
+//        $('#users').on('click', 'tr', function () {
+//            var id = table.row( this ).id();
+//            $.get("/users/getUser", { id: id})
+//              .done(function (data) {
+//                    console.log(data);
+//            });
+//        });
     });
 </script>

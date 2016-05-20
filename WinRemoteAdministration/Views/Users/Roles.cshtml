@@ -2,36 +2,46 @@
     ViewBag.Title = "ManageUserRoles";
 }
 
-<h2>Manage User Roles</h2>
-@Html.ActionLink("Create New Role", "Create") | @Html.ActionLink("Manage User Role", "ManageUserRoles")
-<hr />
+<h1>Manage User Roles</h1>
 
-<h2>Role Add to User</h2>
-
-@using (Html.BeginForm("RoleAddToUser", "Users")) {
-    @Html.AntiForgeryToken()
-    @Html.ValidationSummary(true)
-
-    <p>
-        Username : @Html.TextBox("UserName")
-        Role Name: @Html.DropDownList("RoleName", (IEnumerable<SelectListItem>)ViewBag.Roles, "Select")
-
-    </p>
-
-    <input type="submit" value="Save" />
+@if (ViewBag.ResultType != null) {
+    <div class="alert alert-@ViewBag.ResultType alert-dismissible" role="alert">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        @ViewBag.ResultMessage
+    </div>
 }
-<hr />
-<h3>Delete A User from a Role</h3>
 
-@using (Html.BeginForm("DeleteRoleForUser", "Users")) {
-    @Html.AntiForgeryToken()
-    @Html.ValidationSummary(true)
+@if (ViewBag.User != null) {
+    <span><strong>@ViewBag.UserName</strong> is member of: @ViewBag.UserRoles</span>
+    <hr />
 
-    <p>
-        Username : @Html.TextBox("UserName")
-        Role Name: @Html.DropDownList("RoleName", (IEnumerable<SelectListItem>)ViewBag.Roles, "Select")
+    <h2>Role Add to User</h2>
 
-    </p>
+    using (Html.BeginForm("RoleAddToUser", "Users")) {
+        @Html.AntiForgeryToken()
+        @Html.ValidationSummary(true)
 
-    <input type="submit" value="Delete this user from Role" />
+        <p>
+            Username : @Html.TextBox("UserName")
+            Role Name: @Html.DropDownList("RoleName", (IEnumerable<SelectListItem>)ViewBag.Roles, "Select")
+
+        </p>
+
+        <input type="submit" value="Save" />
+    }
+    <hr />
+    <h2>Delete A User from a Role</h2>
+
+    using (Html.BeginForm("DeleteRoleForUser", "Users")) {
+        @Html.AntiForgeryToken()
+        @Html.ValidationSummary(true)
+
+        <p>
+            Username : @Html.TextBox("UserName")
+            Role Name: @Html.DropDownList("RoleName", (IEnumerable<SelectListItem>)ViewBag.Roles, "Select")
+
+        </p>
+
+        <input type="submit" value="Delete this user from Role" />
+    }
 }

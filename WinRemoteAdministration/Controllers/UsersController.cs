@@ -4,10 +4,16 @@ using System.Linq;
 using System.Web;
 using System.Web.Http;
 using System.Web.Mvc;
+using System.Web.UI.WebControls;
+using Microsoft.Ajax.Utilities;
 using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.EntityFramework;
+using WinRemoteAdministration.Filters;
 using WinRemoteAdministration.Models;
 
 namespace WinRemoteAdministration.Controllers {
+
+    [RequireLogin]
     public class UsersController : Controller {
         private AuthRepository repo = null;
 
@@ -19,28 +25,88 @@ namespace WinRemoteAdministration.Controllers {
             return View();
         }
 
-        public ActionResult Roles() {
+
+        public ActionResult Roles(string UserName) {
             // prepopulat roles for the view dropdown
-            var list = repo.ctx.Roles.OrderBy(r => r.Name).ToList().Select(rr =>new SelectListItem { Value = rr.Name.ToString(), Text = rr.Name }).ToList();
-            ViewBag.Roles = list;
+            BindUserAndRoles(UserName);
+
             return View();
         }
 
-        public ActionResult RoleAddToUser(string UserName, string RoleName) {
-            repo.RoleAddToUser(UserName, RoleName);
-            ViewBag.ResultMessage = "Role created successfully !";
-
+        private void BindUserAndRoles(string UserName) {
             var list = repo.ctx.Roles.OrderBy(r => r.Name).ToList().Select(rr => new SelectListItem { Value = rr.Name.ToString(), Text = rr.Name }).ToList();
             ViewBag.Roles = list;
+
+            var user = repo.FindUserByName(UserName);
+            ViewBag.User = user;
+            var userRoles = repo.GetRoles(UserName);
+            ViewBag.UserName = UserName;
+
+            if (user != null && userRoles.Any()) {
+                ViewBag.UserRoles = userRoles.Aggregate((x, y) => x + ", " + y);
+            }
+            else if (user == null) {
+                ViewBag.ResultType = "danger";
+                ViewBag.ResultMessage = "User " + UserName + " doesn´t exist";
+            }
+        }
+
+        public ActionResult RoleAddToUser(string UserName, string RoleName) {
+            if (!ValidateInputs(UserName, RoleName)) {
+                BindUserAndRoles(UserName);
+                return View("Roles");
+            }
+
+            if (repo.IsInRole(UserName, RoleName)) {
+                ViewBag.ResultType = "danger";
+                ViewBag.ResultMessage = "User " + UserName + " is already in role " + RoleName;
+            }
+            else {
+                repo.RoleAddToUser(UserName, RoleName);
+                ViewBag.ResultType = "success";
+                ViewBag.ResultMessage = "User " + UserName + " has been added to role " + RoleName;
+            }
+//
+//            ViewBag.User = repo.FindUserByName(UserName);
+//            var list = repo.ctx.Roles.OrderBy(r => r.Name).ToList().Select(rr => new SelectListItem { Value = rr.Name.ToString(), Text = rr.Name }).ToList();
+//            ViewBag.Roles = list;
+
+            BindUserAndRoles(UserName);
 
             return View("Roles");
         }
 
-        public ActionResult DeleteRoleForUser(string UserName, string RoleName) {            
-            repo.RemoveFromRole(UserName, RoleName);
+        private bool ValidateInputs(string UserName, string RoleName) {
+            if (UserName.IsNullOrWhiteSpace() || RoleName.IsNullOrWhiteSpace()) {
+                ViewBag.ResultType = "warning";
+                ViewBag.ResultMessage = "Please fill inputs properly";
+                return false;
+            }
 
-            var list = repo.ctx.Roles.OrderBy(r => r.Name).ToList().Select(rr => new SelectListItem { Value = rr.Name.ToString(), Text = rr.Name }).ToList();
-            ViewBag.Roles = list;
+            return true;
+        }
+
+        public ActionResult DeleteRoleForUser(string UserName, string RoleName) {
+            if (!ValidateInputs(UserName, RoleName)) {
+                BindUserAndRoles(UserName);
+                return View("Roles");
+            }
+
+            if (!repo.IsInRole(UserName, RoleName)) {
+                ViewBag.ResultType = "danger";
+                ViewBag.ResultMessage = "User " + UserName + " is not in role " + RoleName;
+            }
+            else {
+                repo.RemoveFromRole(UserName, RoleName);
+                ViewBag.ResultType = "success";
+                ViewBag.ResultMessage = "User " + UserName + " has been removed from " + RoleName;
+            }
+//
+//            ViewBag.User = repo.FindUserByName(UserName);
+//            var list = repo.ctx.Roles.OrderBy(r => r.Name).ToList().Select(rr => new SelectListItem { Value = rr.Name.ToString(), Text = rr.Name }).ToList();
+//            ViewBag.Roles = list;
+
+            BindUserAndRoles(UserName);
 
             return View("Roles");
         }
@@ -64,12 +130,17 @@ namespace WinRemoteAdministration.Controllers {
 
         public ActionResult GetUsers() {
             var allusers = repo.GetAllUsers();
+            UrlHelper u = new UrlHelper(this.ControllerContext.RequestContext);
+
             var users = from user in allusers
                         select new {
                             DT_RowId = user.Id,
                             UserName = user.UserName,
                             Email = user.Email,
-                            Roles = repo.GetRoles(user.UserName)
+                            Roles = repo.GetRoles(user.UserName),
+                            EditRolesHref = u.Action("Roles", "Users", new {
+                                UserName = user.UserName
+                            })
                         };
 
             return Json(new { data = users }, JsonRequestBehavior.AllowGet);

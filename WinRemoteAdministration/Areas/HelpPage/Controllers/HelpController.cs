@@ -3,9 +3,9 @@ using System.Web.Http;
 using System.Web.Mvc;
 using WinRemoteAdministration.Areas.HelpPage.ModelDescriptions;
 using WinRemoteAdministration.Areas.HelpPage.Models;
+using WinRemoteAdministration.Filters;
 
-namespace WinRemoteAdministration.Areas.HelpPage.Controllers
-{
+namespace WinRemoteAdministration.Areas.HelpPage.Controllers {
     /// <summary>
     /// The controller that will handle requests for the help page.
     /// </summary>

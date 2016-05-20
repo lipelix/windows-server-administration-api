@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Security;
+using Microsoft.Ajax.Utilities;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 
@@ -47,12 +48,24 @@ namespace WinRemoteAdministration.Models {
         }
 
         public async Task<IdentityUser> FindUser(string userName, string password) {
+            if (userName.IsNullOrWhiteSpace() || password.IsNullOrWhiteSpace())
+                return null;
+
             IdentityUser user = await userManager.FindAsync(userName, password);
             return user;
         }
 
         public IdentityUser FindUser(string id) {
+            if (id.IsNullOrWhiteSpace())
+                return null;
             IdentityUser user = userManager.FindById(id);
+            return user;
+        }
+
+        public IdentityUser FindUserByName(string userName) {
+            if (userName.IsNullOrWhiteSpace())
+                return null;
+            IdentityUser user = userManager.FindByName(userName);
             return user;
         }
 
@@ -67,10 +80,18 @@ namespace WinRemoteAdministration.Models {
             return roles;
         }
 
-        public void RoleAddToUser(string UserName, string RoleName) {
-            var user = ctx.Users.Where(u => u.UserName.Equals(UserName, StringComparison.CurrentCultureIgnoreCase)).FirstOrDefault();
+        public bool IsInRole(string userName, string roleName) {
+            if (userName.IsNullOrWhiteSpace() || roleName.IsNullOrWhiteSpace())
+                return false;
+
+            var user = FindUserByName(userName);
+            return userManager.IsInRole(user.Id, roleName);
+        }
+
+        public void RoleAddToUser(string userName, string roleName) {
+            var user = ctx.Users.Where(u => u.UserName.Equals(userName, StringComparison.CurrentCultureIgnoreCase)).FirstOrDefault();
             if (user != null)
-                userManager.AddToRole(user.Id, RoleName);
+                userManager.AddToRole(user.Id, roleName);
         }
 
         public void RemoveFromRole(string UserName, String RoleName) {

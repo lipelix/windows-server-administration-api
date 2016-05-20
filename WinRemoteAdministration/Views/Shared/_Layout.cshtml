@@ -40,7 +40,19 @@
             <ul class="nav navbar-nav">
                 <li>@Html.ActionLink("Home", "Index", "Home", new {area = ""}, null)</li>
                 <li>@Html.ActionLink("API", "Index", "Help", new {area = ""}, null)</li>
+                <li>@Html.ActionLink("Users", "Index", "Users", new {area = ""}, null)</li>
             </ul>
+            <ul class="nav navbar-nav navbar-right">
+                @if (Request.Cookies["logged_user"] != null) {
+                    <li>@Html.ActionLink("Logout", "Logout", "Login", new {area = ""}, null)</li>
+                }
+                else {
+                    <li>@Html.ActionLink("Login", "Index", "Login", new {area = ""}, null)</li>
+                }
+            </ul>
+            @if (Request.Cookies["logged_user"] != null) {
+                <p class="nav navbar-text navbar-right">Logged as <strong>@Request.Cookies["logged_user"].Value</strong></p>
+            }
         </div>
     </div>
 </div>
@@ -48,7 +60,7 @@
     @RenderBody()
     <hr/>
     <footer>
-        <p>&copy; @DateTime.Now.Year - My ASP.NET Application</p>
+        <p>&copy; @DateTime.Now.Year - MoWin</p>
     </footer>
 </div>
 <div id="loading"></div>

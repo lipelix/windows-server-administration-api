@@ -1,5 +1,7 @@
 ﻿using System.Web;
 using System.Web.Mvc;
+using WinRemoteAdministration.Filters;
+using RequireHttpsAttribute = System.Web.Mvc.RequireHttpsAttribute;
 
 namespace WinRemoteAdministration {
     public class FilterConfig {
