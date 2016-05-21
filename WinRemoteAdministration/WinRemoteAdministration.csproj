@@ -219,7 +219,6 @@
     <Compile Include="Controllers\LoginController.cs" />
     <Compile Include="Controllers\PscriptsController.cs" />
     <Compile Include="Controllers\UsersController.cs" />
-    <Compile Include="Controllers\ValuesController.cs" />
     <Compile Include="Filters\RequireLogin.cs" />
     <Compile Include="Filters\RequireHttpsAttribute.cs" />
     <Compile Include="Global.asax.cs">
@@ -233,8 +232,10 @@
     <Compile Include="Models\AuthRepository.cs" />
     <Compile Include="Models\GroupedUserViewModel.cs" />
     <Compile Include="Models\OwinAuthDbContext.cs" />
+    <Compile Include="Models\PasswordResetModel.cs" />
     <Compile Include="Models\UserModel.cs" />
     <Compile Include="Models\UserRegModel.cs" />
+    <Compile Include="Models\UserShowModel.cs" />
     <Compile Include="Models\UserViewModel.cs" />
     <Compile Include="Providers\AuthorizationServerProvider.cs" />
     <Compile Include="Services\Pscript.cs" />
@@ -307,6 +308,9 @@
     <None Include="Views\Login\Index.cshtml" />
     <Content Include="Views\Users\Index.cshtml" />
     <Content Include="Views\Users\Roles.cshtml" />
+    <Content Include="Views\Users\Create.cshtml" />
+    <Content Include="Views\Users\User.cshtml" />
+    <Content Include="Views\Users\ResetPassword.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />

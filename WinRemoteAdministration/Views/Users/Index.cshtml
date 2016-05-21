@@ -11,6 +11,10 @@
     </thead>
 </table>
 
+<hr/>
+
+<button class="btn btn-info" type="button" onclick="window.location.href='@Url.Action("Create", "Users", null, Request.Url.Scheme)'">Create User</button>
+
 <script>
     $(function () {
         var table = $('#users').DataTable({

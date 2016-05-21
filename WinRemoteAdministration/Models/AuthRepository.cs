@@ -41,7 +41,9 @@ namespace WinRemoteAdministration.Models {
 
             if (result.Succeeded) {
                 var currentUser = userManager.FindByName(user.UserName);
-                var roleresult = userManager.AddToRole(currentUser.Id, "admin");
+                userManager.AddToRole(currentUser.Id, "admin");
+                user.Email = userModel.Email;
+                userManager.Update(user);
             }
 
             return result;
@@ -99,6 +101,17 @@ namespace WinRemoteAdministration.Models {
             if (user != null && userManager.IsInRole(user.Id, RoleName)) {
                 userManager.RemoveFromRole(user.Id, RoleName);
             }
+        }
+
+        public IdentityResult ChangePassword(string userId, string newPassword) {
+            IdentityUser user = FindUser(userId);
+
+            if (user == null)
+                return null;
+
+            user.PasswordHash = userManager.PasswordHasher.HashPassword(newPassword);
+
+            return userManager.Update(user);
         }
 
         public List<IdentityUser> GetAllUsers() {

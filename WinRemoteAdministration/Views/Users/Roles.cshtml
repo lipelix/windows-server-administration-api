@@ -21,13 +21,14 @@
         @Html.AntiForgeryToken()
         @Html.ValidationSummary(true)
 
-        <p>
-            Username : @Html.TextBox("UserName")
-            Role Name: @Html.DropDownList("RoleName", (IEnumerable<SelectListItem>)ViewBag.Roles, "Select")
+        <div class="form-group">
+            @Html.Label("UserName")
+            @Html.TextBox("UserName", null, new {@class = "form-control"})
+            @Html.Label("Role")
+            @Html.DropDownList("RoleName", (IEnumerable<SelectListItem>)ViewBag.Roles, "Select", new { @class = "form-control" })
+        </div>
 
-        </p>
-
-        <input type="submit" value="Save" />
+        <input type="submit" class="btn btn-info" value="Add" />
     }
     <hr />
     <h2>Delete A User from a Role</h2>
@@ -36,12 +37,13 @@
         @Html.AntiForgeryToken()
         @Html.ValidationSummary(true)
 
-        <p>
-            Username : @Html.TextBox("UserName")
-            Role Name: @Html.DropDownList("RoleName", (IEnumerable<SelectListItem>)ViewBag.Roles, "Select")
+        <div class="form-group">
+            @Html.Label("UserName")
+            @Html.TextBox("UserName", null, new { @class = "form-control" })
+            @Html.Label("Role")
+            @Html.DropDownList("RoleName", (IEnumerable<SelectListItem>)ViewBag.Roles, "Select", new { @class = "form-control" })
+        </div>
 
-        </p>
-
-        <input type="submit" value="Delete this user from Role" />
+        <input type="submit" class="btn btn-info" value="Delete from role" />
     }
 }

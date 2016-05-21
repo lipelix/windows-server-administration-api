@@ -111,21 +111,26 @@ namespace WinRemoteAdministration.Controllers {
             return View("Roles");
         }
 
-
-        // POST api/Account/Register
-        [Filters.RequireHttps]
-        public ActionResult Register(UserRegModel userModel) {
-            if (!ModelState.IsValid) {
-                Response.StatusCode = 400;
+//        [HttpPost]
+        public ActionResult Create(UserRegModel user) {
+            try {
+                if (ModelState.IsValid) {
+                    IdentityResult result = repo.RegisterUser(user);
+                    if (result.Succeeded) {
+                        ViewBag.ResultType = "success";
+                        ViewBag.ResultMessage = "User " + user.UserName + " has been created";
+                    }
+                    else {
+                        ViewBag.ResultType = "danger";
+                        ViewBag.ResultMessage = result.Errors.Aggregate((x, y) => x + "; " + y);
+                    }
+                }            
+            }
+            catch {
+                return View();
             }
 
-            IdentityResult result = repo.RegisterUser(userModel);
-
-            if (result == null) {
-                Response.StatusCode = 401;
-            }
-
-            return Json(result, JsonRequestBehavior.AllowGet);
+            return View();
         }
 
         public ActionResult GetUsers() {
@@ -135,6 +140,9 @@ namespace WinRemoteAdministration.Controllers {
             var users = from user in allusers
                         select new {
                             DT_RowId = user.Id,
+                            UserInfoHref = u.Action("User", "Users", new {
+                                name = user.UserName
+                            }),
                             UserName = user.UserName,
                             Email = user.Email,
                             Roles = repo.GetRoles(user.UserName),
@@ -146,15 +154,38 @@ namespace WinRemoteAdministration.Controllers {
             return Json(new { data = users }, JsonRequestBehavior.AllowGet);
         }
 
-        public ActionResult GetUser(String id) {            
-            var user = repo.FindUser(id);
-//            var users = from user in allusers
-//                        select new {
-//                            UserName = user.UserName,
-//                            Email = user.Email
-//                        };
+        public ActionResult User(String name) {            
+            var user = repo.FindUserByName(name);
 
-            return Json(new { data = user }, JsonRequestBehavior.AllowGet);
+            if (user != null) {
+                ViewBag.Id = user.Id;
+                ViewBag.UserName = user.UserName;
+                ViewBag.Email = user.Email;
+                ViewBag.Roles = repo.GetRoles(user.UserName).Aggregate((x, y) => x + ", " + y);             
+            }
+
+            return View("User");
+        }
+
+        public ActionResult ResetPassword(PasswordResetModel model) {
+            try {
+                if (ModelState.IsValid) {
+                    IdentityResult result = repo.ChangePassword(model.Id, model.Password);
+                    if (result.Succeeded) {
+                        ViewBag.ResultType = "success";
+                        ViewBag.ResultMessage = "User password has been changed";
+                    }
+                    else {
+                        ViewBag.ResultType = "danger";
+                        ViewBag.ResultMessage = result.Errors.Aggregate((x, y) => x + "; " + y);
+                    }
+                }
+            }
+            catch {
+                return User(model.UserName);
+            }
+
+            return User(model.UserName);
         }
     }
 }
