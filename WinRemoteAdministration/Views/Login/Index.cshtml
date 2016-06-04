@@ -9,7 +9,7 @@
         <label for="pwd">Password:</label>
         <input type="password" class="form-control" id="pwd">
     </div>
-    <button type="button" class="btn btn-default" onclick="login()">Log In</button>
+    <button type="button" class="btn btn-info" onclick="login()">Log In</button>
 </form>
 
 <script>
@@ -20,20 +20,40 @@
 
         $.ajax({
             method: "POST",
-            url: "/api/token",
+            url: "/login/isSupervisor",
             dataType: "json",
-            data: { grant_type:"password", username: name, password: pwd }
+            data: { username: name }
         }).done(function (msg) {
-            console.log(msg);
-            Cookies.set('access_token', msg.access_token);
-            Cookies.set('logged_user', $("#usr").val());
-//            $("#login").prepend('<div class="alert alert-success alert-dismissible" role="alert"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong>Success!</strong> Logged as ' + $("#usr").val() + '</div>');
-            window.location.href = '/Home';
-        }).fail(function(msg) {
-            console.log(msg);
+            if (msg.isSupervisor) {
+                Cookies.set('role', 'supervisor');
+//                setTimeout(function () { getToken(); }, 3000);
+                getToken(name, pwd);
+            } else {
+                Cookies.remove('role');
+                $("#login").prepend('<div class="alert alert-danger alert-dismissible" role="alert"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong>Warning!</strong> ' + msg.error + '</div>');
+            }
+        }).fail(function (msg) {
             Cookies.remove('logged_user');
             Cookies.remove('access_token');
-            $("#login").prepend('<div class="alert alert-danger alert-dismissible" role="alert"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong>Warning!</strong> '+msg.responseJSON.error_description+'</div>');
+            Cookies.remove('role');
+        });
+    }
+
+    function getToken(name, pwd) {
+        $.ajax({
+            method: "POST",
+            url: "/api/token",
+            dataType: "json",
+            data: { grant_type: "password", username: name, password: pwd }
+        }).done(function (msg) {
+            Cookies.set('access_token', msg.access_token);
+            Cookies.set('logged_user', $("#usr").val());
+            $("#login").prepend('<div class="alert alert-success alert-dismissible" role="alert"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong>Success!</strong> ' + name + ' succesfully logged in</div>');
+            window.location.href = '/Home';
+        }).fail(function (msg) {
+            Cookies.remove('logged_user');
+            Cookies.remove('access_token');
+            $("#login").prepend('<div class="alert alert-danger alert-dismissible" role="alert"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong>Warning!</strong> ' + msg.responseJSON.error_description + '</div>');
         });
     }
 </script>

@@ -10,8 +10,9 @@ namespace WinRemoteAdministration.Filters {
     public class RequireLogin : ActionFilterAttribute, IActionFilter {
         void IActionFilter.OnActionExecuting(ActionExecutingContext filterContext) {
             HttpCookie token = filterContext.HttpContext.Request.Cookies.Get("access_token");
+            HttpCookie role = filterContext.HttpContext.Request.Cookies.Get("role");
 
-            if (token == null) {
+            if (token == null || role == null || !role.Value.Equals("supervisor")) {
                 RouteValueDictionary redirectTargetDictionary = new RouteValueDictionary();
                 redirectTargetDictionary.Add("action", "Index");
                 redirectTargetDictionary.Add("controller", "Login");

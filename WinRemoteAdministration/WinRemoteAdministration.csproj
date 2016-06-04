@@ -229,6 +229,7 @@
       <DependentUpon>201603291906145_InitialCreate.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
+    <Compile Include="Models\ApiLogEntry.cs" />
     <Compile Include="Models\AuthRepository.cs" />
     <Compile Include="Models\GroupedUserViewModel.cs" />
     <Compile Include="Models\OwinAuthDbContext.cs" />
@@ -238,6 +239,7 @@
     <Compile Include="Models\UserShowModel.cs" />
     <Compile Include="Models\UserViewModel.cs" />
     <Compile Include="Providers\AuthorizationServerProvider.cs" />
+    <Compile Include="Services\ApiLogHandler.cs" />
     <Compile Include="Services\Pscript.cs" />
     <Compile Include="Services\Pscripts.cs" />
     <Compile Include="Services\IPscriptsServices.cs" />

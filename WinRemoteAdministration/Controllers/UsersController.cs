@@ -66,10 +66,6 @@ namespace WinRemoteAdministration.Controllers {
                 ViewBag.ResultType = "success";
                 ViewBag.ResultMessage = "User " + UserName + " has been added to role " + RoleName;
             }
-//
-//            ViewBag.User = repo.FindUserByName(UserName);
-//            var list = repo.ctx.Roles.OrderBy(r => r.Name).ToList().Select(rr => new SelectListItem { Value = rr.Name.ToString(), Text = rr.Name }).ToList();
-//            ViewBag.Roles = list;
 
             BindUserAndRoles(UserName);
 
@@ -95,6 +91,9 @@ namespace WinRemoteAdministration.Controllers {
             if (!repo.IsInRole(UserName, RoleName)) {
                 ViewBag.ResultType = "danger";
                 ViewBag.ResultMessage = "User " + UserName + " is not in role " + RoleName;
+            } else if (Request.Cookies["logged_user"].Value.Equals(UserName.ToLower()) && RoleName.Equals("supervisor")) {
+                ViewBag.ResultType = "danger";
+                ViewBag.ResultMessage = "You can´t remove yourself from supervisor role";
             }
             else {
                 repo.RemoveFromRole(UserName, RoleName);
@@ -159,12 +158,19 @@ namespace WinRemoteAdministration.Controllers {
 
             if (user != null) {
                 ViewBag.Id = user.Id;
-                ViewBag.UserName = user.UserName;
+                ViewBag.UserName = user.UserName.ToLower();
                 ViewBag.Email = user.Email;
-                ViewBag.Roles = repo.GetRoles(user.UserName).Aggregate((x, y) => x + ", " + y);             
+                ViewBag.IsSupervisor = isSupervisor(user.UserName);
+                var roles = repo.GetRoles(user.UserName);
+                if (roles.Any())
+                    ViewBag.Roles = repo.GetRoles(user.UserName).Aggregate((x, y) => x + ", " + y);             
             }
 
             return View("User");
+        }
+
+        public Boolean isSupervisor(String username) {
+            return repo.IsInRole(username, "supervisor");
         }
 
         public ActionResult ResetPassword(PasswordResetModel model) {

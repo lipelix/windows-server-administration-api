@@ -74,7 +74,7 @@ namespace WinRemoteAdministration.Migrations
                 .PrimaryKey(t => new { t.LoginProvider, t.ProviderKey, t.UserId })
                 .ForeignKey("dbo.AspNetUsers", t => t.UserId, cascadeDelete: true)
                 .Index(t => t.UserId);
-            
+
         }
         
         public override void Down()
@@ -94,6 +94,7 @@ namespace WinRemoteAdministration.Migrations
             DropTable("dbo.AspNetUsers");
             DropTable("dbo.AspNetUserRoles");
             DropTable("dbo.AspNetRoles");
+
         }
     }
 }

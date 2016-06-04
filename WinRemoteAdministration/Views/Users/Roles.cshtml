@@ -12,10 +12,10 @@
 }
 
 @if (ViewBag.User != null) {
-    <span><strong>@ViewBag.UserName</strong> is member of: @ViewBag.UserRoles</span>
+    <span><strong>@ViewBag.UserName</strong> is member of: <span class="label label-primary">@ViewBag.UserRoles</span></span>
     <hr />
 
-    <h2>Role Add to User</h2>
+    <h2>Add User to Role</h2>
 
     using (Html.BeginForm("RoleAddToUser", "Users")) {
         @Html.AntiForgeryToken()

@@ -9,28 +9,50 @@ namespace WinRemoteAdministration.Migrations {
 
     internal sealed class Configuration : DbMigrationsConfiguration<WinRemoteAdministration.Models.OwinAuthDbContext> {
         public Configuration() {
-            AutomaticMigrationsEnabled = false;
+            AutomaticMigrationsEnabled = true;
         }
 
         protected override void Seed(WinRemoteAdministration.Models.OwinAuthDbContext context) {
-            var roleStore = new RoleStore<IdentityRole>(context);
-            var roleManager = new RoleManager<IdentityRole>(roleStore);
+//                        var roleStore = new RoleStore<IdentityRole>(context);
+//                        var roleManager = new RoleManager<IdentityRole>(roleStore);
+//            
+//                        roleManager.Create(new IdentityRole { Name = "admin" });
+//                        roleManager.Create(new IdentityRole { Name = "supervisor" });
+//            
+//                        var userStore = new UserStore<IdentityUser>(context);
+//                        var userManager = new UserManager<IdentityUser>(userStore);            
+//            
+//                        var user = new IdentityUser { UserName = "supervisor", PasswordHash = "123456"};     
+//                        userManager.AddToRole(user.Id, "supervisor");
 
-            roleManager.Create(new IdentityRole { Name = "admin" });
-            roleManager.Create(new IdentityRole { Name = "supervisor" });
 
-            var userStore = new UserStore<IdentityUser>(context);
-            var userManager = new UserManager<IdentityUser>(userStore);
+            const string UserName = "supervisor";
+            const string RoleName = "supervisor";
+            const string Password = "123456";
 
-            var user = new IdentityUser { UserName = "supervisor", PasswordHash = "123456"};
-            userManager.Create(user);
-            userManager.AddToRole(user.Id, "supervisor");
+            var userRole = new IdentityRole { Name = RoleName, Id = Guid.NewGuid().ToString() };
+            context.Roles.Add(userRole);
 
-//            IdentityUser superAdmin = new IdentityUser();
-//            superAdmin.UserName = "superadmin";
-//            superAdmin.PasswordHash = "123456";
-//
-//            context.Users.Add(superAdmin);
+            var hasher = new PasswordHasher();
+
+            var user = new IdentityUser {
+                UserName = UserName,
+                PasswordHash = hasher.HashPassword(Password),
+                SecurityStamp = Guid.NewGuid().ToString()
+            };
+
+            user.Roles.Add(new IdentityUserRole { RoleId = userRole.Id, UserId = user.Id });
+
+            context.Users.Add(user);
+
+            base.Seed(context);
+
+
+            //            IdentityUser superAdmin = new IdentityUser();
+            //            superAdmin.UserName = "superadmin";
+            //            superAdmin.PasswordHash = "123456";
+            //
+            //            context.Users.Add(superAdmin);
 
             //              This method will be called after migrating to the latest version.
             //
@@ -43,6 +65,7 @@ namespace WinRemoteAdministration.Migrations {
             //                  new Person { FullName = "Brice Lambson" },
             //                  new Person { FullName = "Rowan Miller" }
             //                );
+
 
 
         }
