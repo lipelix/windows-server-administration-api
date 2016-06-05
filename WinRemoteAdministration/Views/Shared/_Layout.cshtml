@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width"/>
     <title>@ViewBag.Title</title>
     @Styles.Render("~/Content/css")
+    @Styles.Render("~/Content/jquery-ui.min.css")
     @Styles.Render("~/Content/jquery.dataTables.css")
     @Scripts.Render("~/bundles/modernizr")
 </head>
@@ -41,6 +42,7 @@
                 <li>@Html.ActionLink("Home", "Index", "Home", new {area = ""}, null)</li>
                 <li>@Html.ActionLink("API", "Index", "Help", new {area = ""}, null)</li>
                 <li>@Html.ActionLink("Users", "Index", "Users", new {area = ""}, null)</li>
+                <li>@Html.ActionLink("Log", "Index", "Log", new {area = ""}, null)</li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
                 @if (Request.Cookies["logged_user"] != null) {

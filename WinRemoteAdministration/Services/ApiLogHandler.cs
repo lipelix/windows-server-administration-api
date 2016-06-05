@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -32,15 +34,22 @@ namespace WinRemoteAdministration.Services {
                     if (response.Content != null) {
                         apiLogEntry.ResponseContentBody = response.Content.ReadAsStringAsync().Result;
                         apiLogEntry.ResponseContentType = response.Content.Headers.ContentType.MediaType;
-                        apiLogEntry.ResponseHeaders = SerializeHeaders(response.Content.Headers);
                     }
 
-                    // TODO: Save the API log entry to the database
-
-                    System.Diagnostics.Debug.WriteLine(apiLogEntry.ToString());
+                    saveEntry(apiLogEntry);
 
                     return response;
                 }, cancellationToken);
+        }
+
+        private void saveEntry(ApiLogEntry entry) {  
+            var day = entry.RequestTimestamp.ToString("dd-MM-yyyy", CultureInfo.InvariantCulture);
+            var path = AppDomain.CurrentDomain.GetData("DataDirectory").ToString() + "/Log/" + day + ".txt";
+
+            if (File.Exists(path))
+                File.AppendAllText(path, ",");
+
+            File.AppendAllText(path, JsonConvert.SerializeObject(entry, Formatting.Indented));
         }
 
         private ApiLogEntry CreateApiLogEntryWithRequestData(HttpRequestMessage request) {
@@ -48,44 +57,17 @@ namespace WinRemoteAdministration.Services {
             var routeData = request.GetRouteData();
 
             return new ApiLogEntry {
-                Application = "[insert-calling-app-here]",
                 User = context.User.Identity.Name,
                 Machine = Environment.MachineName,
                 RequestContentType = context.Request.ContentType,
-                RequestRouteTemplate = routeData.Route.RouteTemplate,
-                RequestRouteData = SerializeRouteData(routeData),
                 Controller = routeData.Values["controller"].ToString(),
                 Action = routeData.Values["action"].ToString(),
                 Param = routeData.Values["param"].ToString(),
                 RequestIpAddress = context.Request.UserHostAddress,
                 RequestMethod = request.Method.Method,
-                RequestHeaders = SerializeHeaders(request.Headers),
                 RequestTimestamp = DateTime.Now,
                 RequestUri = request.RequestUri.ToString()
             };
-        }
-
-        private string SerializeRouteData(IHttpRouteData routeData) {
-            return JsonConvert.SerializeObject(routeData, Formatting.Indented);
-        }
-
-        private string SerializeHeaders(HttpHeaders headers) {
-            var dict = new Dictionary<string, string>();
-
-            foreach (var item in headers.ToList()) {
-                if (item.Value != null) {
-                    var header = String.Empty;
-                    foreach (var value in item.Value) {
-                        header += value + " ";
-                    }
-
-                    // Trim the trailing space and add item to the dictionary
-                    header = header.TrimEnd(" ".ToCharArray());
-                    dict.Add(item.Key, header);
-                }
-            }
-
-            return JsonConvert.SerializeObject(dict, Formatting.Indented);
         }
     }
 }

@@ -1,0 +1,56 @@
+﻿<h1>Logs</h1>
+
+<div id="datepicker"></div>
+
+<h3>Api calls from <strong class="date-out"></strong></h3>
+<table id="logs" class="display" cellspacing="0" width="100%">
+    <thead>
+    <tr>
+        <th>Time</th>
+        <th>User</th>
+        <th>Script</th>
+        <th>Params</th>
+        <th>Response status code</th>
+    </tr>
+    </thead>
+</table>
+
+<script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+<script>
+    $(function () {
+        var table = $('#logs').DataTable({
+            "ajax": "/log/getLog",
+            "error": function (xhr, error, thrown) {
+                error(xhr, error, thrown);
+                console.log(error);
+            },
+            "columns": [
+                {
+                    "data": function (data, type, row, meta) {
+                        var d = data.RequestTimestamp.replace('/Date(', '');
+                        var timestamp = new Date(parseInt(d));
+                        timestamp.getHours();
+                        return timestamp.getHours() +":"+ timestamp.getMinutes() +":" + timestamp.getSeconds();
+                    }
+                },
+                { "data": "User" },
+                { "data": "Param" },
+                { "data": "RequestContentBody" },
+                { "data": "ResponseStatusCode" }
+            ]
+        });
+        $.fn.dataTable.ext.errMode = 'none';
+
+        $("#datepicker").datepicker({
+            dateFormat: 'dd-mm-yy',
+            maxDate: new Date(),
+            onSelect: function (dateText, inst) {
+                var date = $(this).val();
+                $('.date-out').html(date);
+                var url = "/log/getLog?date=" + date.toString();
+                table.clear().draw();
+                table.ajax.url(url).load();
+            }
+        });
+    });
+</script>

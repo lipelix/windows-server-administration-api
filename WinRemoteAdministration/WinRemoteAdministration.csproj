@@ -216,6 +216,7 @@
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.cs" />
     <Compile Include="Controllers\ApiAccountController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\LogController.cs" />
     <Compile Include="Controllers\LoginController.cs" />
     <Compile Include="Controllers\PscriptsController.cs" />
     <Compile Include="Controllers\UsersController.cs" />
@@ -313,6 +314,7 @@
     <Content Include="Views\Users\Create.cshtml" />
     <Content Include="Views\Users\User.cshtml" />
     <Content Include="Views\Users\ResetPassword.cshtml" />
+    <Content Include="Views\Log\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />
