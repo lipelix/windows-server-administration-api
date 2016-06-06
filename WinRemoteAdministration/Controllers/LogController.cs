@@ -24,14 +24,15 @@ namespace WinRemoteAdministration.Controllers {
             try {
                 string file = "[" + System.IO.File.ReadAllText(fileName) + "]";
                 List<ApiLogEntry> log = JsonConvert.DeserializeObject<List<ApiLogEntry>>(file);
-                var response = new {data = log};              
+                var iterator = 1;
+                log.ToList().ForEach(x => x.Id = iterator++);
+                var response = new { data = log };
 
                 return Content(new JavaScriptSerializer().Serialize(response), "application/json");
             }
             catch (FileNotFoundException e) {
-//                return Json(new {error = "No logs founded."}, JsonRequestBehavior.AllowGet);
                 return Json(null, JsonRequestBehavior.AllowGet);
-            }                
+            }
         }
     }
 }

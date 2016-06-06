@@ -18,10 +18,10 @@ using WinRemoteAdministration.Services;
 namespace WinRemoteAdministration.Controllers {
 
     [System.Web.Http.RoutePrefix("api/Account")]
-    public class ApiAccountController : ApiController {
+    public class AccountController : ApiController {
         private AuthRepository repo = null;
 
-        public ApiAccountController() {
+        public AccountController() {
             repo = new AuthRepository();
         }
 

@@ -7,6 +7,7 @@ using System.Web;
 namespace WinRemoteAdministration.Models {
 
     public class ApiLogEntry {
+        public int Id { get; set; }
         public string User { get; set; }                    // The user that made the request.
         public string Machine { get; set; }                 // The machine that made the request.
         public string RequestIpAddress { get; set; }        // The IP address that made the request.

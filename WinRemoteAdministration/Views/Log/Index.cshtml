@@ -8,6 +8,8 @@
     <tr>
         <th>Time</th>
         <th>User</th>
+        <th>Controller</th>
+        <th>Action</th>
         <th>Script</th>
         <th>Params</th>
         <th>Response status code</th>
@@ -15,11 +17,16 @@
     </thead>
 </table>
 
+<h3 id="call-heading">Call details</h3>
+<div id="call"></div>
+
 <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+<script src="//cdn.datatables.net/plug-ins/1.10.11/sorting/time.js"></script>
 <script>
     $(function () {
         var table = $('#logs').DataTable({
-            "ajax": "/log/getLog",
+            "ajax": "./log/getLog",
+            "rowId": "Id",
             "error": function (xhr, error, thrown) {
                 error(xhr, error, thrown);
                 console.log(error);
@@ -27,13 +34,13 @@
             "columns": [
                 {
                     "data": function (data, type, row, meta) {
-                        var d = data.RequestTimestamp.replace('/Date(', '');
-                        var timestamp = new Date(parseInt(d));
-                        timestamp.getHours();
-                        return timestamp.getHours() +":"+ timestamp.getMinutes() +":" + timestamp.getSeconds();
-                    }
+                        return formatDate(data.RequestTimestamp);
+                    },
+                    "type": "time-uni"
                 },
                 { "data": "User" },
+                { "data": "Controller" },
+                { "data": "Action" },
                 { "data": "Param" },
                 { "data": "RequestContentBody" },
                 { "data": "ResponseStatusCode" }
@@ -41,16 +48,50 @@
         });
         $.fn.dataTable.ext.errMode = 'none';
 
+        $('#logs tbody').on('click', 'tr', function () {
+            var data = table.row(this).data();
+            var time = formatDate(data.RequestTimestamp);
+            var rtime = formatDate(data.ResponseTimestamp);
+
+            var html = "<div><strong>Time</strong> : " + time + "</div>" +
+                "<div><strong>Controller</strong> : " + data.Controller + "</div>" +
+                "<div><strong>Action</strong> : " + data.Action + "</div>" +
+                "<div><strong>Script</strong> : " + data.Param + "</div>" +
+                "<div><strong>Content Type</strong> : " + data.RequestContentType + "</div>" +
+                "<div><strong>Uri</strong> : " + data.RequestUri + "</div>" +
+                "<div><strong>Request Method</strong> : " + data.RequestMethod + "</div>" +
+                "<div><strong>Request Ip</strong> : " + data.RequestIpAddress + "</div>" +
+                "<div><strong>Params</strong> : " + data.RequestContentBody + "</div>" +
+                "<div><strong>User</strong> : " + data.User + "</div>" +
+                "<br/>" +
+                "<div><strong>Response Time</strong> : " + rtime + "</div>" +
+                "<div><strong>Response Status</strong> : " + data.ResponseStatusCode + "</div>" +
+                "<div><strong>Response Content Type</strong> : " + data.ResponseContentType + "</div>" +
+                "<div><strong>Response Content Body</strong> : " + data.ResponseContentBody + "</div>";
+
+            $("#call").html(html);
+        });
+
         $("#datepicker").datepicker({
             dateFormat: 'dd-mm-yy',
             maxDate: new Date(),
             onSelect: function (dateText, inst) {
+                $("#call").html("");
                 var date = $(this).val();
                 $('.date-out').html(date);
-                var url = "/log/getLog?date=" + date.toString();
+                var url = "./log/getLog?date=" + date.toString();
                 table.clear().draw();
                 table.ajax.url(url).load();
             }
         });
+
+        var url = "./log/getLog?date=" + $("#datepicker").datepicker({ dateFormat: 'dd-mm-yy' }).val();
+        table.ajax.url(url).load();
     });
+
+    function formatDate(stamp) {
+        var d = stamp.replace('/Date(', '');
+        var timestamp = new Date(parseInt(d));
+        return timestamp.getHours() + ":" + ('0' + timestamp.getMinutes()).slice(-2) + ':' + ('0' + timestamp.getSeconds()).slice(-2);
+    }
 </script>

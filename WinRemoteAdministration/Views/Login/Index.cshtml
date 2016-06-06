@@ -20,7 +20,7 @@
 
         $.ajax({
             method: "POST",
-            url: "/login/isSupervisor",
+            url: "./login/isSupervisor",
             dataType: "json",
             data: { username: name }
         }).done(function (msg) {
@@ -42,14 +42,14 @@
     function getToken(name, pwd) {
         $.ajax({
             method: "POST",
-            url: "/api/token",
+            url: "./api/token",
             dataType: "json",
             data: { grant_type: "password", username: name, password: pwd }
         }).done(function (msg) {
             Cookies.set('access_token', msg.access_token);
             Cookies.set('logged_user', $("#usr").val());
             $("#login").prepend('<div class="alert alert-success alert-dismissible" role="alert"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong>Success!</strong> ' + name + ' succesfully logged in</div>');
-            window.location.href = '/Home';
+            window.location.href = './Home';
         }).fail(function (msg) {
             Cookies.remove('logged_user');
             Cookies.remove('access_token');
