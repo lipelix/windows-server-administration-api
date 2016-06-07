@@ -41,7 +41,8 @@
             <ul class="nav navbar-nav">
                 <li>@Html.ActionLink("Home", "Index", "Home", new {area = ""}, null)</li>
                 <li>@Html.ActionLink("Users", "Index", "Users", new {area = ""}, null)</li>
-                <li>@Html.ActionLink("Log", "Index", "Log", new {area = ""}, null)</li>
+                <li>@Html.ActionLink("Logs", "Index", "Log", new {area = ""}, null)</li>
+                <li>@Html.ActionLink("Statistics", "Stats", "Log", new {area = ""}, null)</li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
                 @if (Request.Cookies["logged_user"] != null) {

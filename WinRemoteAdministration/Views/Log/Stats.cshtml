@@ -1,0 +1,233 @@
+﻿<h1>Stats</h1>
+
+<div id="stats-calendars">
+    <div class="stats-calendar">
+        From:
+        <div id="from"></div>
+    </div>
+
+    <div class="stats-calendar">
+        To:
+        <div id="to"></div>
+    </div>
+</div>
+<div class="text-center">
+    <strong>Date range: </strong><span class="range"></span>
+</div>
+<div class="container">
+    <div id="countChart-wrap" class="charts-wrap"></div>
+    <div id="usersChart-wrap" class="charts-wrap"></div>
+    <div id="statusChart-wrap" class="charts-wrap"></div>
+    <div id="controllerChart-wrap" class="charts-wrap"></div>
+    <div id="actionChart-wrap" class="charts-wrap"></div>
+</div>
+
+<script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.13.0/moment.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/Chart.js/2.1.4/Chart.bundle.min.js"></script>
+<script>
+    $(function() {
+        $( "#from" ).datepicker({
+            defaultDate: "-1d",
+            dateFormat: 'dd-mm-yy',
+            maxDate: new Date(),
+            changeMonth: true,
+            numberOfMonths: 1,
+            onSelect: function (selectedDate) {
+                $("#to").datepicker("option", "minDate", selectedDate);
+                setRange();
+            }
+        });
+        $( "#to" ).datepicker({
+            defaultDate: "+1d",
+            dateFormat: 'dd-mm-yy',
+            maxDate: new Date(),
+            changeMonth: true,
+            numberOfMonths: 1,
+            onSelect: function (selectedDate) {
+                $("#from").datepicker("option", "maxDate", selectedDate);
+                setRange();
+            }
+        });
+
+        setRange();
+    });
+
+    function setRange() {
+        var html = $("#from").datepicker({ dateFormat: 'dd-mm-yy' }).val() + " - " + $("#to").datepicker({ dateFormat: 'dd-mm-yy' }).val();
+        $(".range").html(html);
+        loadStats();
+    }
+
+    function getRange() {
+        var from = $("#from").datepicker("getDate");
+        var to = $("#to").datepicker("getDate");
+        var it = 1;
+        var date = moment(from);
+        var dates = [];
+
+        while (date <= to) {
+            dates.push(moment(date).format('DD-MM-YYYY'));
+            date = moment(from).add(it++, 'days');
+        }
+
+        return dates;
+    }
+
+    function loadStats() {
+        $.ajax({
+            method: "POST",
+            url: "./getLogs",
+            dataType: "json",
+            data: { dates: getRange() }
+        }).done(function (response) {
+            drawCharts(response);
+        }).fail(function (response) {
+            console.log(response);
+        });
+    }
+
+    function drawControllersChart(response, id) {
+        var labels = [];
+        var data = [];
+        for (var i = 0; i < response.Controllers.length; i++) {
+            labels.push(response.Controllers[i].Controller);
+            data.push(response.Controllers[i].Count);
+        }
+
+        drawPieChart(labels, data, id, 'Count of calls on Controllers');
+    }
+
+    function drawActionsChart(response, id) {
+        var labels = [];
+        var data = [];
+        for (var i = 0; i < response.Actions.length; i++) {
+            labels.push(response.Actions[i].Action);
+            data.push(response.Actions[i].Count);
+        }
+
+        drawPieChart(labels, data, id, 'Count of calls of Actions in');
+    }
+
+    function drawStatusChart(response, id) {
+        var labels = [];
+        var data = [];
+        for (var i = 0; i < response.Statuses.length; i++) {
+            labels.push(response.Statuses[i].Status);
+            data.push(response.Statuses[i].Count);
+        }
+
+        drawPieChart(labels, data, id, 'Count of Response Statuses');
+    }
+
+    function drawUsersChart(response, id) {
+        var labels = [];
+        var data = [];
+        for (var i = 0; i < response.Users.length; i++) {
+            if (response.Users[i].User == "" || response.Users[i].User == null)
+                continue;
+            labels.push(response.Users[i].User);
+            data.push(response.Users[i].Count);
+        }
+
+        drawPieChart(labels, data, id, 'Users activity');
+    }
+
+    function drawPieChart(labels, data, id, name) {
+        $('#' + id + '-wrap').empty();
+        $('#' + id + '-wrap').append('<strong>'+name+'</strong>');
+        $('#' + id + '-wrap').append('<canvas id="' + id + '"></canvas>');
+        var sctx = document.getElementById(id);
+        var chart = new Chart(sctx, {
+            type: 'pie',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: name,
+                    data: data,
+                    backgroundColor: getRandomColors(labels.length),
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true
+            }
+        });
+    }
+
+    function drawCharts(response) {
+        var labels = [];
+        var data = [];
+        for (var i = 0; i < response.Params.length; i++) {
+            if (response.Params[i].Param == "")
+                continue;
+            labels.push(response.Params[i].Param);
+            data.push(response.Params[i].Count);
+        }
+
+        Chart.defaults.global.legend.display = false;
+        $('#countChart-wrap').empty();
+        $('#countChart-wrap').append('<strong>Count of scripts executions</strong>');
+        $('#countChart-wrap').append('<canvas id="countChart"></canvas>');
+        var ctx = document.getElementById("countChart");
+        var countChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Count',
+                    data: data,
+                    backgroundColor: getColors("00f", labels.length),
+                    borderColor: getColors("00f", labels.length),
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero: true,
+                            scaleIntegersOnly: true
+                        },
+                        scaleOverride: true, scaleStepWidth: 1, scaleSteps: 10,
+                        scaleShowLabels : false
+                    }]
+                },
+                legendTemplate : '<h2>hi</h2>',
+                vAxis: { format: '0' },
+                responsive: true,
+                maintainAspectRatio: true
+            }
+        });
+
+        Chart.defaults.global.legend.display = true;
+        drawStatusChart(response, "statusChart");
+        drawControllersChart(response, "controllerChart");
+        drawActionsChart(response, "actionChart");
+        drawUsersChart(response, "usersChart");
+    }
+
+    function getColors(color, count) {
+        var colors = [];
+        for (var j = 0; j < count; j++) {
+            colors.push('#' + color);
+        }
+
+        return colors;
+    }
+
+    function getRandomColors(count) {
+        var letters = '0123456789ABCDEF'.split('');
+        var colors = [];
+        for (var j = 0; j < count; j++) {
+            var color = '#';
+            for (var i = 0; i < 6; i++) {
+                color += letters[Math.floor(Math.random() * 16)];
+            }
+            colors.push(color);
+        }
+
+        return colors;
+    }
+</script>

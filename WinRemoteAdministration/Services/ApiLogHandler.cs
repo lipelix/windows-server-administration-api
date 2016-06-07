@@ -5,10 +5,15 @@ using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Security.Claims;
+using System.Security.Principal;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http.Routing;
+using System.Web.Routing;
+using System.Web.Security;
+using Microsoft.AspNet.Identity;
 using Newtonsoft.Json;
 using WinRemoteAdministration.Models;
 
@@ -55,9 +60,12 @@ namespace WinRemoteAdministration.Services {
         private ApiLogEntry CreateApiLogEntryWithRequestData(HttpRequestMessage request) {
             var context = ((HttpContextBase)request.Properties["MS_HttpContext"]);
             var routeData = request.GetRouteData();
+            ClaimsIdentity identity = (ClaimsIdentity)request.GetRequestContext().Principal.Identity;
+            var username = identity.Claims.First().Value;
+            System.Diagnostics.Debug.WriteLine(username);
 
             return new ApiLogEntry {
-                User = context.User.Identity.Name,
+                User = username,
                 Machine = Environment.MachineName,
                 RequestContentType = context.Request.ContentType,
                 Controller = routeData.Values["controller"].ToString(),

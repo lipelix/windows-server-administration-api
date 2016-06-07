@@ -35,3 +35,21 @@ textarea {
 .dataTable tbody tr {
     cursor: pointer;
 }
+
+.stats-calendar {
+    float: left;
+    margin: 20px;
+}
+
+#stats-calendars {
+    text-align: center;
+    width: 100%;
+    overflow: auto;
+}
+
+.charts-wrap {
+    width: 50%;
+    float: left;
+    margin: 30px 0;
+    text-align: center;
+}
