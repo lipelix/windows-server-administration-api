@@ -86,6 +86,7 @@
         });
 
         var url = "./log/getLog?date=" + $("#datepicker").datepicker({ dateFormat: 'dd-mm-yy' }).val();
+        $('.date-out').html($("#datepicker").datepicker({ dateFormat: 'dd-mm-yy' }).val());
         table.ajax.url(url).load();
     });
 

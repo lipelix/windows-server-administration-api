@@ -21,11 +21,15 @@ namespace WinRemoteAdministration.Providers {
         public override async Task GrantResourceOwnerCredentials(OAuthGrantResourceOwnerCredentialsContext context) {
             context.OwinContext.Response.Headers.Add("Access-Control-Allow-Origin", new[] { "*" });
 
-            using (AuthRepository _repo = new AuthRepository()) {
-                IdentityUser user = await _repo.FindUser(context.UserName, context.Password);
+            using (AuthRepository repo = new AuthRepository()) {
+                IdentityUser user = await repo.FindUser(context.UserName, context.Password);
+                bool isAndroid = context.Request.Headers["User-Agent"].ToString().Contains("Android");
 
                 if (user == null) {
                     context.SetError("invalid_grant", "The user name or password is incorrect.");
+                    return;
+                } else if (!repo.IsInRole(user.UserName, "admin") && isAndroid) {
+                    context.SetError("invalid_grant", "The user is not admin.");
                     return;
                 }
             }
