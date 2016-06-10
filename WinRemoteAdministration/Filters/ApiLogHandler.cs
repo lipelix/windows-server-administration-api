@@ -1,23 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
-using System.Net.Http.Headers;
 using System.Security.Claims;
-using System.Security.Principal;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
-using System.Web.Http.Routing;
-using System.Web.Routing;
-using System.Web.Security;
-using Microsoft.AspNet.Identity;
 using Newtonsoft.Json;
 using WinRemoteAdministration.Models;
 
-namespace WinRemoteAdministration.Services {
+namespace WinRemoteAdministration.Filters {
     public class ApiLogHandler : DelegatingHandler {
         protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken) {
             var apiLogEntry = CreateApiLogEntryWithRequestData(request);

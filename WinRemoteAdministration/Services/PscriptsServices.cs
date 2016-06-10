@@ -13,7 +13,7 @@ using System.Text;
 using System.Web.Helpers;
 
 namespace WinRemoteAdministration.Services {
-    public class PscriptsServices : IPscriptsServices {
+    public class PscriptsServices {
 
         protected Pscripts Pscripts;
 
@@ -52,7 +52,7 @@ namespace WinRemoteAdministration.Services {
                     var shell = PowerShell.Create();
                     shell.Commands.AddScript("& \"" + script.Path + "\" " + scriptParams + " | ConvertTo-Json");
                     Collection<PSObject> results = shell.Invoke();
-                    System.Diagnostics.Debug.WriteLine("Output:");
+
                     foreach (var psObject in results) {
                         System.Diagnostics.Debug.WriteLine(psObject);
                         var outputObject = Newtonsoft.Json.JsonConvert.DeserializeObject(psObject.ToString());
@@ -101,36 +101,6 @@ namespace WinRemoteAdministration.Services {
             MethodInfo method = typeof(PscriptsServices).GetMethod(methodName);
             return method.Invoke(this, new object[] {json});   
         }
-
-//        public object getUserFilter(object resultObject) {
-//            dynamic resObj = resultObject;        
-//            var filteredObject = new {
-//                GivenName = resObj.GivenName,
-//                Surname = resObj.Surname,
-//                Enabled = resObj.Enabled,
-//                SamAccountName = resObj.SamAccountName,
-//                DistinguishedName = resObj.DistinguishedName,
-//                Name = resObj.Name,
-//                AccountExpirationDate = resObj.AccountExpirationDate.ToString("G"),
-//                EmailAddress = resObj.EmailAddress,
-//                LastLogonDate = resObj.LastLogonDate.ToString("G"),
-//                PasswordLastSet = resObj.PasswordLastSet.ToString("G"),
-//                Created = resObj.Created.ToString("G")
-//            };
-//            return filteredObject;
-//        }
-//
-//        public object createUserFilter(object resultObject) {
-//            dynamic resObj = resultObject;
-//            var filteredObject = new {
-//                Enabled = resObj.Enabled,
-//                SamAccountName = resObj.SamAccountName,
-//                Name = resObj.Name,
-//                AccountExpirationDate = resObj.AccountExpirationDate.ToString("G"),
-//                Created = resObj.Created.ToString("G")
-//            };
-//            return filteredObject;
-//        }
 
     }
 }

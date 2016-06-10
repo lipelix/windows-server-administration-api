@@ -12,10 +12,7 @@ using WinRemoteAdministration.Models;
 
 namespace WinRemoteAdministration.Providers {
     public class AuthorizationServerProvider : OAuthAuthorizationServerProvider {
-        public override async Task ValidateClientAuthentication(OAuthValidateClientAuthenticationContext context) {
-
-            //todo validation
-
+        public override async Task ValidateClientAuthentication(OAuthValidateClientAuthenticationContext context) {        
             context.Validated();
         }
         public override async Task GrantResourceOwnerCredentials(OAuthGrantResourceOwnerCredentialsContext context) {
@@ -30,6 +27,9 @@ namespace WinRemoteAdministration.Providers {
                     return;
                 } else if (!repo.IsInRole(user.UserName, "admin") && isAndroid) {
                     context.SetError("invalid_grant", "The user is not admin.");
+                    return;
+                } else if (!repo.IsInRole(user.UserName, "supervisor") && !isAndroid) {
+                    context.SetError("invalid_grant", "The user is not supervisor.");
                     return;
                 }
             }

@@ -18,25 +18,7 @@
         var pwd = $("#pwd").val();
         $(".alert").remove();
 
-        $.ajax({
-            method: "POST",
-            url: "./login/isSupervisor",
-            dataType: "json",
-            data: { username: name }
-        }).done(function (msg) {
-            if (msg.isSupervisor) {
-                Cookies.set('role', 'supervisor');
-//                setTimeout(function () { getToken(); }, 3000);
-                getToken(name, pwd);
-            } else {
-                Cookies.remove('role');
-                $("#login").prepend('<div class="alert alert-danger alert-dismissible" role="alert"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong>Warning!</strong> ' + msg.error + '</div>');
-            }
-        }).fail(function (msg) {
-            Cookies.remove('logged_user');
-            Cookies.remove('access_token');
-            Cookies.remove('role');
-        });
+        getToken(name, pwd);
     }
 
     function getToken(name, pwd) {
@@ -46,13 +28,15 @@
             dataType: "json",
             data: { grant_type: "password", username: name, password: pwd }
         }).done(function (msg) {
-            Cookies.set('access_token', msg.access_token);
+            Cookies.set('access_token', msg.access_token, { expires: msg.expires_in / 86400 });
             Cookies.set('logged_user', $("#usr").val());
+            Cookies.set('role', 'supervisor');
             $("#login").prepend('<div class="alert alert-success alert-dismissible" role="alert"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong>Success!</strong> ' + name + ' succesfully logged in</div>');
             window.location.href = './Home';
         }).fail(function (msg) {
             Cookies.remove('logged_user');
             Cookies.remove('access_token');
+            Cookies.remove('role');
             $("#login").prepend('<div class="alert alert-danger alert-dismissible" role="alert"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong>Warning!</strong> ' + msg.responseJSON.error_description + '</div>');
         });
     }

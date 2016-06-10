@@ -23,10 +23,6 @@ namespace WinRemoteAdministration.Controllers {
             return ps.RunScript(param, this.Request.GetQueryNameValuePairs().GetEnumerator());
         }
 
-        /// <summary>
-        /// Execute script on server.
-        /// </summary>
-        /// <param name="param">Script name.</param>
         [HttpPost]
         public string RunScriptPost(string param, FormDataCollection formData) {
             IEnumerator<KeyValuePair<string, string>> valueMap = WebAPIUtils.Convert(formData);
