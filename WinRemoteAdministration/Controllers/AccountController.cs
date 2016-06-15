@@ -13,10 +13,13 @@ using System.Web.Mvc;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 using WinRemoteAdministration.Models;
-using WinRemoteAdministration.Services;
+using WinRemoteAdministration.Providers;
 
 namespace WinRemoteAdministration.Controllers {
 
+    /// <summary>
+    /// Account controller process api calls related to managing user accounts. Also provides process calls to get server certificate and test server availability.
+    /// </summary>
     [System.Web.Http.RoutePrefix("api/Account")]
     public class AccountController : ApiController {
         private AuthRepository repo = null;
@@ -25,6 +28,10 @@ namespace WinRemoteAdministration.Controllers {
             repo = new AuthRepository();
         }
 
+        /// <summary>
+        /// Call for downloading server certificate from app_data folder.
+        /// </summary>
+        /// <returns>certificate file</returns>
         [System.Web.Http.HttpGet]        
         public HttpResponseMessage getCert() {
             var path = System.Web.HttpContext.Current.Server.MapPath("~/App_Data/cert.pfx");
@@ -46,28 +53,15 @@ namespace WinRemoteAdministration.Controllers {
             return result;
         }
 
+        /// <summary>
+        /// Test server availability.
+        /// </summary>
+        /// <returns>"hello" string</returns>
         [System.Web.Http.HttpGet]
         public HttpResponseMessage Ping() {
             HttpResponseMessage response = Request.CreateResponse(HttpStatusCode.OK, "pong");
             response.Content = new StringContent("hello", Encoding.Unicode);
             return response;
-        }
-
-        // POST api/account/isValid
-        [Filters.RequireHttps]
-        [System.Web.Http.Authorize]
-        public async Task<IHttpActionResult> IsValid(UserModel userModel) {
-            if (!ModelState.IsValid) {
-                return BadRequest(ModelState);
-            }
-
-            IdentityUser result = await repo.FindUser(userModel.UserName, userModel.Password);
-        
-            if (result == null) {
-                return new UnauthorizedResult(new AuthenticationHeaderValue[0], this.Request);
-            }
-
-            return Ok();
         }
 
         protected override void Dispose(bool disposing) {
@@ -76,29 +70,6 @@ namespace WinRemoteAdministration.Controllers {
             }
 
             base.Dispose(disposing);
-        }
-
-        private IHttpActionResult GetErrorResult(IdentityResult result) {
-            if (result == null) {
-                return InternalServerError();
-            }
-
-            if (!result.Succeeded) {
-                if (result.Errors != null) {
-                    foreach (string error in result.Errors) {
-                        ModelState.AddModelError("", error);
-                    }
-                }
-
-                if (ModelState.IsValid) {
-                    // No ModelState errors are available to send, so just return an empty BadRequest.
-                    return BadRequest();
-                }
-
-                return BadRequest(ModelState);
-            }
-
-            return null;
         }
     }
 }

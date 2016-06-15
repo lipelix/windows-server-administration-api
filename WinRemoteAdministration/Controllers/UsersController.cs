@@ -13,6 +13,9 @@ using WinRemoteAdministration.Models;
 
 namespace WinRemoteAdministration.Controllers {
 
+    /// <summary>
+    /// Handling operations to manipulate and manage users and their roles.
+    /// </summary>
     [RequireLogin]
     public class UsersController : Controller {
         private AuthRepository repo = null;
@@ -21,11 +24,19 @@ namespace WinRemoteAdministration.Controllers {
             repo = new AuthRepository();
         }
 
+        /// <summary>
+        /// Render View of users administration.
+        /// </summary>
+        /// <returns>Html page with users administration.</returns>
         public ActionResult Index() {
             return View();
         }
 
-
+        /// <summary>
+        /// Render View with user role management.
+        /// </summary>
+        /// <param name="UserName">Name of user to manage.</param>
+        /// <returns>Html page with user role administration.</returns>
         public ActionResult Roles(string UserName) {
             // prepopulat roles for the view dropdown
             BindUserAndRoles(UserName);
@@ -33,6 +44,10 @@ namespace WinRemoteAdministration.Controllers {
             return View();
         }
 
+        /// <summary>
+        /// Bind information about user role membership to view.
+        /// </summary>
+        /// <param name="UserName">User name whose info will be bind.</param>
         private void BindUserAndRoles(string UserName) {
             var list = repo.ctx.Roles.OrderBy(r => r.Name).ToList().Select(rr => new SelectListItem { Value = rr.Name.ToString(), Text = rr.Name }).ToList();
             ViewBag.Roles = list;
@@ -51,6 +66,12 @@ namespace WinRemoteAdministration.Controllers {
             }
         }
 
+        /// <summary>
+        /// Add user to specified role.
+        /// </summary>
+        /// <param name="UserName">Name of user.</param>
+        /// <param name="RoleName">Name of role to which user will be added.</param>
+        /// <returns>Html page with user role administration.</returns>
         public ActionResult RoleAddToUser(string UserName, string RoleName) {
             if (!ValidateInputs(UserName, RoleName)) {
                 BindUserAndRoles(UserName);
@@ -72,6 +93,12 @@ namespace WinRemoteAdministration.Controllers {
             return View("Roles");
         }
 
+        /// <summary>
+        /// Validate inputs of user name and role.
+        /// </summary>
+        /// <param name="UserName">Name of user.</param>
+        /// <param name="RoleName">Name of role.</param>
+        /// <returns>True of false according to validation result.</returns>
         private bool ValidateInputs(string UserName, string RoleName) {
             if (UserName.IsNullOrWhiteSpace() || RoleName.IsNullOrWhiteSpace()) {
                 ViewBag.ResultType = "warning";
@@ -82,6 +109,12 @@ namespace WinRemoteAdministration.Controllers {
             return true;
         }
 
+        /// <summary>
+        /// Removed user from specified role.
+        /// </summary>
+        /// <param name="UserName">Name of user.</param>
+        /// <param name="RoleName">Name of role.</param>
+        /// <returns>Html page with user role administration.</returns>
         public ActionResult DeleteRoleForUser(string UserName, string RoleName) {
             if (!ValidateInputs(UserName, RoleName)) {
                 BindUserAndRoles(UserName);
@@ -100,17 +133,17 @@ namespace WinRemoteAdministration.Controllers {
                 ViewBag.ResultType = "success";
                 ViewBag.ResultMessage = "User " + UserName + " has been removed from " + RoleName;
             }
-//
-//            ViewBag.User = repo.FindUserByName(UserName);
-//            var list = repo.ctx.Roles.OrderBy(r => r.Name).ToList().Select(rr => new SelectListItem { Value = rr.Name.ToString(), Text = rr.Name }).ToList();
-//            ViewBag.Roles = list;
 
             BindUserAndRoles(UserName);
 
             return View("Roles");
         }
 
-//        [HttpPost]
+        /// <summary>
+        /// Create new user account.
+        /// </summary>
+        /// <param name="user">User registration model <see cref="UserRegModel"/></param>
+        /// <returns>Html page with create user form.</returns>
         public ActionResult Create(UserRegModel user) {
             try {
                 if (ModelState.IsValid) {
@@ -132,6 +165,10 @@ namespace WinRemoteAdministration.Controllers {
             return View();
         }
 
+        /// <summary>
+        /// Get all users.
+        /// </summary>
+        /// <returns>All users with informations in Json array.</returns>
         public ActionResult GetUsers() {
             var allusers = repo.GetAllUsers();
             UrlHelper u = new UrlHelper(this.ControllerContext.RequestContext);
@@ -153,6 +190,11 @@ namespace WinRemoteAdministration.Controllers {
             return Json(new { data = users }, JsonRequestBehavior.AllowGet);
         }
 
+        /// <summary>
+        /// Render View with information about user.
+        /// </summary>
+        /// <param name="name">Name of user.</param>
+        /// <returns>Html page with user info.</returns>
         public ActionResult User(String name) {            
             var user = repo.FindUserByName(name);
 
@@ -160,7 +202,7 @@ namespace WinRemoteAdministration.Controllers {
                 ViewBag.Id = user.Id;
                 ViewBag.UserName = user.UserName.ToLower();
                 ViewBag.Email = user.Email;
-                ViewBag.IsSupervisor = isSupervisor(user.UserName);
+                ViewBag.IsSupervisor = repo.IsInRole(user.UserName, "supervisor");
                 var roles = repo.GetRoles(user.UserName);
                 if (roles.Any())
                     ViewBag.Roles = repo.GetRoles(user.UserName).Aggregate((x, y) => x + ", " + y);             
@@ -169,10 +211,11 @@ namespace WinRemoteAdministration.Controllers {
             return View("User");
         }
 
-        public Boolean isSupervisor(String username) {
-            return repo.IsInRole(username, "supervisor");
-        }
-
+        /// <summary>
+        /// Change user password.
+        /// </summary>
+        /// <param name="model">User password reset model <see cref="PasswordResetModel"/></param>
+        /// <returns>Call <see cref="User"/> to return user info page.</returns>
         public ActionResult ResetPassword(PasswordResetModel model) {
             try {
                 if (ModelState.IsValid) {

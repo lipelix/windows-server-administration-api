@@ -1,11 +1,7 @@
-﻿using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
-using System.Linq;
 using System.Net.Http.Formatting;
-using System.Web;
 
-namespace WinRemoteAdministration.Services {
+namespace WinRemoteAdministration.Providers {
     public static class WebAPIUtils {
 
         /// <summary>
@@ -23,6 +19,11 @@ namespace WinRemoteAdministration.Services {
             return pairs;
         }
 
+        /// <summary>
+        /// Create simple serialized error response in JSON format.
+        /// </summary>
+        /// <param name="errorText">Text of error response.</param>
+        /// <returns>String response in JSON format.</returns>
         public static string CreateSimpleErrorResponse(string errorText) {
             var errorObject = new {
                 error = errorText

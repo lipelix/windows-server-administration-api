@@ -5,6 +5,10 @@ using System.Linq;
 using System.Web;
 
 namespace WinRemoteAdministration.Models {
+
+    /// <summary>
+    /// Model of user registration.
+    /// </summary>
     public class UserRegModel {
         [Required]
         [Display(Name = "User name")]

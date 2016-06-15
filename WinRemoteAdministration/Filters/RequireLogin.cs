@@ -7,6 +7,10 @@ using System.Web.Routing;
 using Microsoft.AspNet.Identity;
 
 namespace WinRemoteAdministration.Filters {
+
+    /// <summary>
+    /// Filter for enforcement that user has to be logged in as supervisor, to use specific action.
+    /// </summary>
     public class RequireLogin : ActionFilterAttribute, IActionFilter {
         void IActionFilter.OnActionExecuting(ActionExecutingContext filterContext) {
             HttpCookie token = filterContext.HttpContext.Request.Cookies.Get("access_token");

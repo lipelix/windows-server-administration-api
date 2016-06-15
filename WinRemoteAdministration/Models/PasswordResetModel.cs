@@ -7,6 +7,10 @@ using System.Web.Mvc;
 using System.Web.UI.WebControls;
 
 namespace WinRemoteAdministration.Models {
+
+    /// <summary>
+    /// Model class for password reset.
+    /// </summary>
     public class PasswordResetModel {
         [Required]
         [StringLength(100, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 6)]

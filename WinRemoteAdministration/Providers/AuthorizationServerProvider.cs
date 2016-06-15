@@ -11,6 +11,10 @@ using Microsoft.Owin.Security.OAuth;
 using WinRemoteAdministration.Models;
 
 namespace WinRemoteAdministration.Providers {
+
+    /// <summary>
+    /// Authorization server provider check request on authorization token and provides valid token or error message. 
+    /// </summary>
     public class AuthorizationServerProvider : OAuthAuthorizationServerProvider {
         public override async Task ValidateClientAuthentication(OAuthValidateClientAuthenticationContext context) {        
             context.Validated();

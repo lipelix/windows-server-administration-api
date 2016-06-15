@@ -10,9 +10,14 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 
 namespace WinRemoteAdministration.Models {
-    public class AuthRepository : IDisposable {
-        public OwinAuthDbContext ctx;
 
+    /// <summary>
+    /// Authentication Repository manipulate with user related data. 
+    /// It uses database context and provides methods which are provide management functionality to other parts of application.
+    /// </summary>
+    public class AuthRepository : IDisposable {
+
+        public OwinAuthDbContext ctx;
         private UserManager<IdentityUser> userManager;
 
         public AuthRepository() {
@@ -20,19 +25,12 @@ namespace WinRemoteAdministration.Models {
             userManager = new UserManager<IdentityUser>(new UserStore<IdentityUser>(ctx));
         }
 
-        public IdentityResult RegisterUser(UserRegModel userModel) {
-//            var roleStore = new RoleStore<IdentityRole>(ctx);
-//            var roleManager = new RoleManager<IdentityRole>(roleStore);
-//
-//            roleManager.Create(new IdentityRole { Name = "admin" });
-//
-//            var userStore = new UserStore<IdentityUser>(ctx);
-//            var userManager = new UserManager<IdentityUser>(userStore);
-//
-//            var user = new IdentityUser { UserName = "superadmin", PasswordHash = "123456" };
-//            userManager.Create(user);
-//            var result = userManager.AddToRole(user.Id, "admin");
-
+        /// <summary>
+        /// Register new user in database
+        /// </summary>
+        /// <param name="userModel"><see cref="UserRegModel"/> registration model.</param>
+        /// <returns>Result object from UserManger.</returns>
+        public IdentityResult RegisterUser(UserRegModel userModel) {        
             IdentityUser user = new IdentityUser {
                 UserName = userModel.UserName
             };
@@ -49,6 +47,12 @@ namespace WinRemoteAdministration.Models {
             return result;
         }
 
+        /// <summary>
+        /// Finds user according to provided parameters.
+        /// </summary>
+        /// <param name="userName">Name of user.</param>
+        /// <param name="password">Password of user.</param>
+        /// <returns>IdentityUser object.</returns>
         public async Task<IdentityUser> FindUser(string userName, string password) {
             if (userName.IsNullOrWhiteSpace() || password.IsNullOrWhiteSpace())
                 return null;
@@ -57,6 +61,11 @@ namespace WinRemoteAdministration.Models {
             return user;
         }
 
+        /// <summary>
+        /// Finds user according to provided parameters.
+        /// </summary>
+        /// <param name="id">Id user.</param>
+        /// <returns>IdentityUser object.</returns>
         public IdentityUser FindUser(string id) {
             if (id.IsNullOrWhiteSpace())
                 return null;
@@ -64,6 +73,11 @@ namespace WinRemoteAdministration.Models {
             return user;
         }
 
+        /// <summary>
+        /// Finds user according to provided parameters.
+        /// </summary>
+        /// <param name="userName">Name of user.</param>
+        /// <returns>IdentityUser object.</returns>
         public IdentityUser FindUserByName(string userName) {
             if (userName.IsNullOrWhiteSpace())
                 return null;
@@ -71,6 +85,11 @@ namespace WinRemoteAdministration.Models {
             return user;
         }
 
+        /// <summary>
+        /// Get user roles membership.
+        /// </summary>
+        /// <param name="UserName">Name of user.</param>
+        /// <returns>List of roles memebership.</returns>
         public IList<string> GetRoles(string UserName) {
             IList<string> roles = null;
             if (!string.IsNullOrWhiteSpace(UserName)) {
@@ -82,6 +101,12 @@ namespace WinRemoteAdministration.Models {
             return roles;
         }
 
+        /// <summary>
+        /// Test if user is in specified role.
+        /// </summary>
+        /// <param name="userName">Name of user.</param>
+        /// <param name="roleName">Name of role.</param>
+        /// <returns>True or false</returns>
         public bool IsInRole(string userName, string roleName) {
             if (userName.IsNullOrWhiteSpace() || roleName.IsNullOrWhiteSpace())
                 return false;
@@ -90,19 +115,35 @@ namespace WinRemoteAdministration.Models {
             return userManager.IsInRole(user.Id, roleName);
         }
 
+        /// <summary>
+        /// Add user to role.
+        /// </summary>
+        /// <param name="userName">Name of user.</param>
+        /// <param name="roleName">Name of role.</param>
         public void RoleAddToUser(string userName, string roleName) {
             var user = ctx.Users.Where(u => u.UserName.Equals(userName, StringComparison.CurrentCultureIgnoreCase)).FirstOrDefault();
             if (user != null)
                 userManager.AddToRole(user.Id, roleName);
         }
 
-        public void RemoveFromRole(string UserName, String RoleName) {
-            var user = ctx.Users.Where(u => u.UserName.Equals(UserName, StringComparison.CurrentCultureIgnoreCase)).FirstOrDefault();
-            if (user != null && userManager.IsInRole(user.Id, RoleName)) {
-                userManager.RemoveFromRole(user.Id, RoleName);
+        /// <summary>
+        /// Remove user from role.
+        /// </summary>
+        /// <param name="userName">Name of user.</param>
+        /// <param name="roleName">Name of role.</param>
+        public void RemoveFromRole(string userName, string roleName) {
+            var user = ctx.Users.Where(u => u.UserName.Equals(userName, StringComparison.CurrentCultureIgnoreCase)).FirstOrDefault();
+            if (user != null && userManager.IsInRole(user.Id, roleName)) {
+                userManager.RemoveFromRole(user.Id, roleName);
             }
         }
 
+        /// <summary>
+        /// Change password of specified account.
+        /// </summary>
+        /// <param name="userId">Id of user account.</param>
+        /// <param name="newPassword">New password.</param>
+        /// <returns>Identity Result object</returns>
         public IdentityResult ChangePassword(string userId, string newPassword) {
             IdentityUser user = FindUser(userId);
 
@@ -114,6 +155,10 @@ namespace WinRemoteAdministration.Models {
             return userManager.Update(user);
         }
 
+        /// <summary>
+        /// Get all users accounts.
+        /// </summary>
+        /// <returns>List of IdentityUser objets</returns>
         public List<IdentityUser> GetAllUsers() {
             return ctx.Users.ToList();
         }

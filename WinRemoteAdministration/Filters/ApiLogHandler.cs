@@ -11,6 +11,10 @@ using Newtonsoft.Json;
 using WinRemoteAdministration.Models;
 
 namespace WinRemoteAdministration.Filters {
+
+    /// <summary>
+    /// Api log handler catches api calls and save them to logs.
+    /// </summary>
     public class ApiLogHandler : DelegatingHandler {
         protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken) {
             var apiLogEntry = CreateApiLogEntryWithRequestData(request);
@@ -40,6 +44,10 @@ namespace WinRemoteAdministration.Filters {
                 }, cancellationToken);
         }
 
+        /// <summary>
+        /// Saves api call to file at Log folder.
+        /// </summary>
+        /// <param name="entry"><see cref="ApiLogEntry"/> entry.</param>
         private void saveEntry(ApiLogEntry entry) {  
             var day = entry.RequestTimestamp.ToString("dd-MM-yyyy", CultureInfo.InvariantCulture);
             var path = AppDomain.CurrentDomain.GetData("DataDirectory").ToString() + "/Log/" + day + ".txt";
@@ -50,6 +58,11 @@ namespace WinRemoteAdministration.Filters {
             File.AppendAllText(path, JsonConvert.SerializeObject(entry, Formatting.Indented));
         }
 
+        /// <summary>
+        /// Create log entry from request message.
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns><see cref="ApiLogEntry"/> entry.</returns>
         private ApiLogEntry CreateApiLogEntryWithRequestData(HttpRequestMessage request) {
             var context = ((HttpContextBase)request.Properties["MS_HttpContext"]);
             var routeData = request.GetRouteData();

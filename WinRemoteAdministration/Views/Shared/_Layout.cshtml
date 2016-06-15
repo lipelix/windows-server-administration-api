@@ -44,14 +44,14 @@
                 <li>@Html.ActionLink("Statistics", "Stats", "Log", new {area = ""}, null)</li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
-                @if (Request.Cookies["logged_user"] != null) {
+                @if (Request.Cookies["access_token"] != null) {
                     <li>@Html.ActionLink("Logout", "Logout", "Login", new {area = ""}, null)</li>
                 }
                 else {
                     <li>@Html.ActionLink("Login", "Index", "Login", new {area = ""}, null)</li>
                 }
             </ul>
-            @if (Request.Cookies["logged_user"] != null) {
+            @if (Request.Cookies["access_token"] != null) {
                 <p class="nav navbar-text navbar-right">Logged as <strong>@Request.Cookies["logged_user"].Value</strong></p>
             }
         </div>

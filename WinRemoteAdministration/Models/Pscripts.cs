@@ -1,11 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+﻿using System.Collections.Generic;
 using System.Xml.Serialization;
 
-namespace WinRemoteAdministration.Services {
-
+namespace WinRemoteAdministration.Models {
+    /// <summary>
+    /// Model class for loading list of PowerShell scripts informations from pscripts.xml.
+    /// </summary>
     public class Pscripts {
 
         [XmlElement("Pscript")]

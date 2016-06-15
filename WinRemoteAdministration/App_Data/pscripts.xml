@@ -1,8 +1,14 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
+<!-- This is API configuration file. To add new script, follow structure of already defined script. Each script has parameter Name
+which will be name of service in API. Also parameter Path which is actual path to script file is mandatory.-->
 <Pscripts>
   <Pscript>
     <Name>createUser</Name>
     <Path>\PScripts\createUser.ps1</Path>
+  </Pscript>
+  <Pscript>
+    <Name>disableUser</Name>
+    <Path>\PScripts\disableUser.ps1</Path>
   </Pscript>
   <Pscript>
     <Name>getUser</Name>

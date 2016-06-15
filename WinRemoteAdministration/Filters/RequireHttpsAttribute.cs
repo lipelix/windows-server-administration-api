@@ -5,6 +5,10 @@ using System.Web.Http.Controllers;
 using System.Web.Http.Filters;
 
 namespace WinRemoteAdministration.Filters {
+
+    /// <summary>
+    /// Filter for enforcement of secured transfer.
+    /// </summary>
     public class RequireHttpsAttribute : AuthorizationFilterAttribute {
         public override void OnAuthorization(HttpActionContext actionContext) {
             if (actionContext.Request.RequestUri.Scheme != Uri.UriSchemeHttps) {

@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+﻿namespace WinRemoteAdministration.Models {
 
-namespace WinRemoteAdministration.Services {
+    /// <summary>
+    /// Model class for PowerShell script info, loaded from pscripts.xml.
+    /// </summary>
     public class Pscript {
-
         public string Name { get; set; }
-        public string Path { get; set; }          
-
+        public string Path { get; set; } 
     }
 }

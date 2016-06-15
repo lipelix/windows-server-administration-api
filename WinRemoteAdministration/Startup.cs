@@ -13,6 +13,9 @@ using WinRemoteAdministration.Providers;
 
 namespace WinRemoteAdministration {
 
+    /// <summary>
+    /// Startup configuration of authorization service.
+    /// </summary>
     public class Startup {
         public void Configuration(IAppBuilder app) {
             ConfigureOAuth(app);
@@ -29,7 +32,6 @@ namespace WinRemoteAdministration {
             // Token Generation
             app.UseOAuthAuthorizationServer(OAuthServerOptions);
             app.UseOAuthBearerAuthentication(new OAuthBearerAuthenticationOptions());
-
         }
     }
 }

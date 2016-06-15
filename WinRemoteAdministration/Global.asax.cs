@@ -7,10 +7,17 @@ using System.Web.Mvc;
 using System.Web.Optimization;
 using System.Web.Routing;
 using WinRemoteAdministration.Filters;
-using WinRemoteAdministration.Services;
 
 namespace WinRemoteAdministration {
+
+    /// <summary>
+    /// Global application configuration.
+    /// </summary>
     public class WebApiApplication : System.Web.HttpApplication {
+
+        /// <summary>
+        /// Register configuration when application starts.
+        /// </summary>
         protected void Application_Start() {
             AreaRegistration.RegisterAllAreas();
             GlobalConfiguration.Configure(WebApiConfig.Register);

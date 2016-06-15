@@ -6,6 +6,9 @@ using System.Web;
 
 namespace WinRemoteAdministration.Models {
 
+    /// <summary>
+    /// Model class of Api log entry which is saved into log file.
+    /// </summary>
     public class ApiLogEntry {
         public int Id { get; set; }
         public string User { get; set; }                    // The user that made the request.
