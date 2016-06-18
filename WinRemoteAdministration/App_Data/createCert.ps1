@@ -1,14 +1,11 @@
-﻿#Cert Genearation Related Functions 
-
-#************************************************************************************** 
-
-#Create Cert, install Cert to My, install Cert to Root, Export Cert as pfx and bind it
+﻿#Create Certificate and install it to localmachine certificate store. Also exports certificate with private key (cert.pfx) and without (cert.cer). Certificate without private key is downloaded by clients application to verify connections. Mandatory password is used for keystore in pfx certificate.
 
 
 Param ( 
+    [Parameter(Mandatory=$true, HelpMessage="CommonName parameter - DNS name or IP address of server, where application will run.")]
     $certcn,
-    $password,
-    $appId
+    [Parameter(Mandatory=$true, HelpMessage="Password to keystore of generated certificate.")]
+    $password
 ) 
 
 #Check if the certificate name was used before 
@@ -40,6 +37,7 @@ $thumbprintB=(dir cert:\localmachine\My -recurse | where {$_.Subject -match "CN=
         Write-Host "Exporting Certificate as .pfx file" -ForegroundColor Cyan 
 
         Export-PfxCertificate -FilePath $certfilepath -Cert cert:\localmachine\My\$thumbprintA -Password $mypwd 
+        Export-Certificate -Cert cert:\localmachine\My\$thumbprintA -FilePath ".\cert.cer"
         Write-Host "Importing Certificate to LocalMachine\Root" -ForegroundColor Cyan 
 
         Import-PfxCertificate -FilePath $certfilepath -Password $mypwd -CertStoreLocation cert:\LocalMachine\Root 

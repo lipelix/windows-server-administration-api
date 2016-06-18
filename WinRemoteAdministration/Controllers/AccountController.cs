@@ -5,6 +5,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Security.AccessControl;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web.Http;
@@ -34,19 +35,20 @@ namespace WinRemoteAdministration.Controllers {
         /// <returns>certificate file</returns>
         [System.Web.Http.HttpGet]        
         public HttpResponseMessage getCert() {
-            var path = System.Web.HttpContext.Current.Server.MapPath("~/App_Data/cert.pfx");
+            var path = AppDomain.CurrentDomain.GetData("DataDirectory") + "/cert.cer";
             HttpResponseMessage result = new HttpResponseMessage(HttpStatusCode.OK);
 
             try {                
-                var stream = new FileStream(path, FileMode.Open);
+                var stream = new FileStream(path, FileMode.Open, FileAccess.Read);
+
                 result.Content = new StreamContent(stream);
                 result.Content.Headers.ContentDisposition = new ContentDispositionHeaderValue("attachment");
                 result.Content.Headers.ContentDisposition.FileName = Path.GetFileName(path);
                 result.Content.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream");
                 result.Content.Headers.ContentLength = stream.Length;
             }
-            catch (Exception) {
-                result.Content = new StringContent (WebAPIUtils.CreateSimpleErrorResponse("Server does not provide certificate."));
+            catch (Exception e) {
+                result.Content = new StringContent(WebAPIUtils.CreateSimpleErrorResponse(e.Message));
                 return result;
             }
 
