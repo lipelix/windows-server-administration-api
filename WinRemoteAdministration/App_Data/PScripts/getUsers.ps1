@@ -1,4 +1,6 @@
-﻿$Properties = @(
+﻿#Get all users from Active Directory
+
+$Properties = @(
     'SamAccountName',
     'Name',
     'Enabled'

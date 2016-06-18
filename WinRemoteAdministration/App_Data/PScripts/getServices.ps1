@@ -1,4 +1,6 @@
-﻿$Properties = @(
+﻿#Get all services available in system
+
+$Properties = @(
     'Name',
     'StartType',
     'Status'

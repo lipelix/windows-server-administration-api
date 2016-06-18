@@ -1,4 +1,6 @@
-﻿$Properties = 
+﻿#Get current running processes
+
+$Properties = 
     'Id',
     'Name',
     'CPU',

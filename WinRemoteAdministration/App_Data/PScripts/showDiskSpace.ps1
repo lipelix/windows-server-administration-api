@@ -1,4 +1,6 @@
-﻿$Properties = 
+﻿#Get information about free, used and total capacity of system drives unit.
+
+$Properties = 
     @{Name="Name";Expression={$_.Name}},
     @{Name="Free";Expression={$_.Free / 1GB}},
     @{Name="Used";Expression={$_.Used / 1GB}},

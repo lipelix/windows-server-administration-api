@@ -1,4 +1,7 @@
-﻿param (
+﻿#Get running process according to id
+#Input params: Id - Process id
+
+param (
     [int]$Id
 )
 
