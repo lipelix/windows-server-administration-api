@@ -2,6 +2,9 @@ using System.Collections.Generic;
 using System.Net.Http.Formatting;
 
 namespace WinRemoteAdministration.Providers {
+    /// <summary>
+    /// Class WebAPIUtils implements utility methods used across the application.
+    /// </summary>
     public static class WebAPIUtils {
 
         /// <summary>

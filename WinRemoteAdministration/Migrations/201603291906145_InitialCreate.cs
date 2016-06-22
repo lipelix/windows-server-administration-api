@@ -2,9 +2,17 @@ namespace WinRemoteAdministration.Migrations
 {
     using System;
     using System.Data.Entity.Migrations;
-    
+
+    /// <summary>
+    /// Class InitialCreate implements methods when Database doesn´t exists and needs to be created.
+    /// </summary>
+    /// <seealso cref="System.Data.Entity.Migrations.DbMigration" />
+    /// <seealso cref="System.Data.Entity.Migrations.Infrastructure.IMigrationMetadata" />
     public partial class InitialCreate : DbMigration
     {
+        /// <summary>
+        /// Intialize databaze structure.
+        /// </summary>
         public override void Up()
         {
             CreateTable(
@@ -76,7 +84,10 @@ namespace WinRemoteAdministration.Migrations
                 .Index(t => t.UserId);
 
         }
-        
+
+        /// <summary>
+        /// Destroy database structure.
+        /// </summary>
         public override void Down()
         {
             DropForeignKey("dbo.AspNetUserRoles", "UserId", "dbo.AspNetUsers");

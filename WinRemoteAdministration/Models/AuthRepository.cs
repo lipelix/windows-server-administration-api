@@ -17,9 +17,18 @@ namespace WinRemoteAdministration.Models {
     /// </summary>
     public class AuthRepository : IDisposable {
 
+        /// <summary>
+        /// The database context
+        /// </summary>
         public OwinAuthDbContext ctx;
+        /// <summary>
+        /// The user manager
+        /// </summary>
         private UserManager<IdentityUser> userManager;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AuthRepository"/> class.
+        /// </summary>
         public AuthRepository() {
             ctx = new OwinAuthDbContext();
             userManager = new UserManager<IdentityUser>(new UserStore<IdentityUser>(ctx));
@@ -163,6 +172,9 @@ namespace WinRemoteAdministration.Models {
             return ctx.Users.ToList();
         }
 
+        /// <summary>
+        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+        /// </summary>
         public void Dispose() {
             ctx.Dispose();
             userManager.Dispose();

@@ -14,8 +14,14 @@ namespace WinRemoteAdministration.Providers {
     /// </summary>
     public class PscriptsProvider {
 
+        /// <summary>
+        /// The PowerShell scripts
+        /// </summary>
         protected Pscripts Pscripts;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="PscriptsProvider"/> class. Load scripts config.
+        /// </summary>
         public PscriptsProvider() {
             LoadPScripts();
         }

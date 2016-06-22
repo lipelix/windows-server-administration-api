@@ -23,8 +23,14 @@ namespace WinRemoteAdministration.Controllers {
     /// </summary>
     [System.Web.Http.RoutePrefix("api/Account")]
     public class AccountController : ApiController {
+        /// <summary>
+        /// The authorization repository
+        /// </summary>
         private AuthRepository repo = null;
 
+        /// <summary>
+        /// Controller constructor
+        /// </summary>
         public AccountController() {
             repo = new AuthRepository();
         }
@@ -66,6 +72,10 @@ namespace WinRemoteAdministration.Controllers {
             return response;
         }
 
+        /// <summary>
+        /// Releases unmanaged and - optionally - managed resources.
+        /// </summary>
+        /// <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
         protected override void Dispose(bool disposing) {
             if (disposing) {
                 repo.Dispose();

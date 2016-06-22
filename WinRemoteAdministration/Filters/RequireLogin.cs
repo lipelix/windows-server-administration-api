@@ -12,6 +12,10 @@ namespace WinRemoteAdministration.Filters {
     /// Filter for enforcement that user has to be logged in as supervisor, to use specific action.
     /// </summary>
     public class RequireLogin : ActionFilterAttribute, IActionFilter {
+        /// <summary>
+        /// Called when any Web Controller action is procceses. Check if user is logged and has permisions.
+        /// </summary>
+        /// <param name="filterContext">The filter context.</param>
         void IActionFilter.OnActionExecuting(ActionExecutingContext filterContext) {
             HttpCookie token = filterContext.HttpContext.Request.Cookies.Get("access_token");
             HttpCookie role = filterContext.HttpContext.Request.Cookies.Get("role");

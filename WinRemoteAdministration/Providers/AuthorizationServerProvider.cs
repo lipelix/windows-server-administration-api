@@ -16,9 +16,19 @@ namespace WinRemoteAdministration.Providers {
     /// Authorization server provider check request on authorization token and provides valid token or error message. 
     /// </summary>
     public class AuthorizationServerProvider : OAuthAuthorizationServerProvider {
+        /// <summary>
+        /// Validates the client authentication.
+        /// </summary>
+        /// <param name="context">The context.</param>
+        /// <returns>Task.</returns>
         public override async Task ValidateClientAuthentication(OAuthValidateClientAuthenticationContext context) {        
             context.Validated();
         }
+        /// <summary>
+        /// Grants the resource owner credentials.
+        /// </summary>
+        /// <param name="context">The context.</param>
+        /// <returns>Task.</returns>
         public override async Task GrantResourceOwnerCredentials(OAuthGrantResourceOwnerCredentialsContext context) {
             context.OwinContext.Response.Headers.Add("Access-Control-Allow-Origin", new[] { "*" });
 

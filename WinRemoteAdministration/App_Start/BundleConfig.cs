@@ -7,6 +7,10 @@ namespace WinRemoteAdministration {
     /// </summary>
     public class BundleConfig {
 
+        /// <summary>
+        /// Register scripts and styles to bundle
+        /// </summary>
+        /// <param name="bundles">Bundle collection</param>
         public static void RegisterBundles(BundleCollection bundles) {
             bundles.Add(new ScriptBundle("~/bundles/jquery").Include(
                         "~/Scripts/jquery-{version}.js"));

@@ -16,6 +16,12 @@ namespace WinRemoteAdministration.Filters {
     /// Api log handler catches api calls and save them to logs.
     /// </summary>
     public class ApiLogHandler : DelegatingHandler {
+        /// <summary>
+        /// Process http request to save api log as an asynchronous operation.
+        /// </summary>
+        /// <param name="request">The HTTP request.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns>Task&lt;HttpResponseMessage&gt;.</returns>
         protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken) {
             var apiLogEntry = CreateApiLogEntryWithRequestData(request);
             if (request.Content != null) {

@@ -18,8 +18,14 @@ namespace WinRemoteAdministration.Controllers {
     /// </summary>
     [RequireLogin]
     public class UsersController : Controller {
+        /// <summary>
+        /// The authorization repository
+        /// </summary>
         private AuthRepository repo = null;
 
+        /// <summary>
+        /// Controller constructor
+        /// </summary>
         public UsersController() {
             repo = new AuthRepository();
         }

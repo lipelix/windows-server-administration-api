@@ -7,6 +7,9 @@ namespace WinRemoteAdministration.Models {
     /// </summary>
     public class Pscripts {
 
+        /// <summary>
+        /// The PowerShell scripts list
+        /// </summary>
         [XmlElement("Pscript")]
         public List<Pscript> PScriptsList = new List<Pscript>(); 
 

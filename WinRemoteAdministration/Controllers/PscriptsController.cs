@@ -22,7 +22,7 @@ namespace WinRemoteAdministration.Controllers {
         /// <summary>
         /// Use <see cref="PscriptsProvider"/> to execute script. Handling GET requests.
         /// </summary>
-        /// <param name="param">Name of script (defined in <see cref="pscripts.xml"/> configuration file).</param>
+        /// <param name="param">Name of script (defined in <see cref="App_Data/pscripts.xml"/> configuration file).</param>
         /// <returns>Output of script or error in Json format.</returns>
         [HttpGet]
         public string RunScript(string param) {
@@ -33,7 +33,7 @@ namespace WinRemoteAdministration.Controllers {
         /// <summary>
         /// Use <see cref="PscriptsProvider"/> to execute script. Handling POST requests with parameters.
         /// </summary>
-        /// <param name="param">Name of script (defined in <see cref="pscripts.xml"/> configuration file).</param>
+        /// <param name="param">Name of script (defined in <see cref="App_Data/pscripts.xml"/> configuration file).</param>
         /// <param name="formData">Input parameters of script.</param>
         /// <returns>Output of script or error in Json format.</returns>
         [HttpPost]
